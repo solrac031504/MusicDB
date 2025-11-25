@@ -21,13 +21,13 @@ GO
 -- DEFAULTS
 ALTER TABLE [dbo].[Producer]
 ADD CONSTRAINT [DF_Producer_CreatedUtc]
-DEFAULT GETUTCDATE()
+DEFAULT (GETUTCDATE())
 FOR [CreatedUtc];
 GO
 
 ALTER TABLE [dbo].[Producer]
 ADD CONSTRAINT [DF_Producer_CreatedBy]
-DEFAULT SUSER_SNAME()
+DEFAULT (SUSER_SNAME())
 FOR [CreatedBy];
 GO
 

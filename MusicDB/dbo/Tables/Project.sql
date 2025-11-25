@@ -37,13 +37,13 @@ GO
 -- DEFAULTS
 ALTER TABLE [dbo].[Project]
 ADD CONSTRAINT [DF_Project_CreatedUtc]
-DEFAULT GETUTCDATE()
+DEFAULT (GETUTCDATE())
 FOR [CreatedUtc];
 GO
 
 ALTER TABLE [dbo].[Project]
 ADD CONSTRAINT [DF_Project_CreatedBy]
-DEFAULT SUSER_SNAME()
+DEFAULT (SUSER_SNAME())
 FOR [CreatedBy];
 GO
 

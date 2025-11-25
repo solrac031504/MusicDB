@@ -37,13 +37,13 @@ GO
 -- DEFAULTS
 ALTER TABLE [dbo].[GenreHierarchy]
 ADD CONSTRAINT [DF_GenreHierarchy_CreatedUtc]
-DEFAULT GETUTCDATE()
+DEFAULT (GETUTCDATE())
 FOR [CreatedUtc];
 GO
 
 ALTER TABLE [dbo].[GenreHierarchy]
 ADD CONSTRAINT [DF_GenreHierarchy_CreatedBy]
-DEFAULT SUSER_SNAME()
+DEFAULT (SUSER_SNAME())
 FOR [CreatedBy];
 GO
 

@@ -20,13 +20,13 @@ GO
 -- DEFAULTS
 ALTER TABLE [dbo].[StreamingService]
 ADD CONSTRAINT [DF_StreamingService_CreatedUtc]
-DEFAULT GETUTCDATE()
+DEFAULT (GETUTCDATE())
 FOR [CreatedUtc];
 GO
 
 ALTER TABLE [dbo].[StreamingService]
 ADD CONSTRAINT [DF_StreamingService_CreatedBy]
-DEFAULT SUSER_SNAME()
+DEFAULT (SUSER_SNAME())
 FOR [CreatedBy];
 GO
 
