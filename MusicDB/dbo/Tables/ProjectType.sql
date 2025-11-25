@@ -5,7 +5,7 @@ CREATE TABLE [dbo].[ProjectType]
     , CreatedUtc            DATETIME            NOT NULL
     , CreatedBy             NVARCHAR(255)       NOT NULL
     , ModifiedUtc           DATETIME                NULL
-    , ModifiedBY            NVARCHAR(255)           NULL
+    , ModifiedBy            NVARCHAR(255)           NULL
     , CONSTRAINT [PK_ProjectType] PRIMARY KEY CLUSTERED (ProjectTypeId ASC)
 );
 GO

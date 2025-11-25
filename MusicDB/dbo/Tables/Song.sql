@@ -59,7 +59,7 @@ GO
 
 ALTER TABLE [dbo].[Song]
 ADD CONSTRAINT [FK_Song_ServiceId]
-FOREIGN KEY (ServiceID)
+FOREIGN KEY (ServiceId)
 REFERENCES [dbo].[StreamingService] (ServiceId);
 GO
 
@@ -67,7 +67,7 @@ GO
 ALTER TABLE [dbo].[Song]
 ADD CONSTRAINT [DF_Song_IsLocalFile]
 DEFAULT (( 0 ))
-FOR [IsLocalFIle];
+FOR [IsLocalFile];
 GO
 
 ALTER TABLE [dbo].[Song]

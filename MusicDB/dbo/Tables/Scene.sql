@@ -7,7 +7,7 @@ CREATE TABLE [dbo].[Scene]
     , CreatedUtc            DATETIME            NOT NULL
     , CreatedBy             NVARCHAR(255)       NOT NULL
     , ModifiedUtc           DATETIME                NULL
-    , ModifiedBY            NVARCHAR(255)           NULL
+    , ModifiedBy            NVARCHAR(255)           NULL
     , CONSTRAINT [PK_Scene] PRIMARY KEY CLUSTERED (SceneId ASC)
 );
 GO

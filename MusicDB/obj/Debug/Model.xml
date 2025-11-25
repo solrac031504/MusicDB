@@ -153,10 +153,11 @@
 					<References ExternalSource="BuiltIns" Name="[dbo]" />
 				</Entry>
 			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="3" />
 		</Element>
 		<Element Type="SqlCheckConstraint" Name="[dbo].[CK_Song_Duration]">
 			<Property Name="CheckExpressionScript">
-				<Value><![CDATA[[Duration]>=(0)]]></Value>
+				<Value><![CDATA[[Duration] >= 0]]></Value>
 			</Property>
 			<Relationship Name="CheckExpressionDependencies">
 				<Entry>
@@ -171,7 +172,7 @@
 		</Element>
 		<Element Type="SqlCheckConstraint" Name="[dbo].[CK_Song_Rating]">
 			<Property Name="CheckExpressionScript">
-				<Value><![CDATA[[Rating]>=(0.00) AND [Rating]<=(10.00)]]></Value>
+				<Value><![CDATA[[Rating] >= 0.00 AND [Rating] <= 10.00]]></Value>
 			</Property>
 			<Relationship Name="CheckExpressionDependencies">
 				<Entry>
@@ -186,7 +187,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_Artist_CreatedBy]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(suser_sname())]]></Value>
+				<Value><![CDATA[(SUSER_SNAME())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -201,7 +202,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_Artist_CreatedUtc]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(getutcdate())]]></Value>
+				<Value><![CDATA[(GETUTCDATE())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -216,7 +217,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_Genre_CreatedBy]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(suser_sname())]]></Value>
+				<Value><![CDATA[(SUSER_SNAME())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -231,7 +232,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_Genre_CreatedUtc]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(getutcdate())]]></Value>
+				<Value><![CDATA[(GETUTCDATE())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -246,7 +247,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_GenreHierarchy_CreatedBy]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(suser_sname())]]></Value>
+				<Value><![CDATA[(SUSER_SNAME())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -261,7 +262,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_GenreHierarchy_CreatedUtc]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(getutcdate())]]></Value>
+				<Value><![CDATA[(GETUTCDATE())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -276,7 +277,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_Group_CreatedBy]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(suser_sname())]]></Value>
+				<Value><![CDATA[(SUSER_SNAME())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -291,7 +292,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_Group_CreatedUtc]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(getutcdate())]]></Value>
+				<Value><![CDATA[(GETUTCDATE())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -306,7 +307,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_Producer_CreatedBy]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(suser_sname())]]></Value>
+				<Value><![CDATA[(SUSER_SNAME())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -321,7 +322,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_Producer_CreatedUtc]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(getutcdate())]]></Value>
+				<Value><![CDATA[(GETUTCDATE())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -336,7 +337,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_ProducerGroup_CreatedBy]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(suser_sname())]]></Value>
+				<Value><![CDATA[(SUSER_SNAME())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -351,7 +352,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_ProducerGroup_CreatedUtc]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(getutcdate())]]></Value>
+				<Value><![CDATA[(GETUTCDATE())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -366,7 +367,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_Project_CreatedBy]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(suser_sname())]]></Value>
+				<Value><![CDATA[(SUSER_SNAME())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -381,7 +382,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_Project_CreatedUtc]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(getutcdate())]]></Value>
+				<Value><![CDATA[(GETUTCDATE())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -396,7 +397,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_ProjectType_CreatedBy]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(suser_sname())]]></Value>
+				<Value><![CDATA[(SUSER_SNAME())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -411,7 +412,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_ProjectType_CreatedUtc]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(getutcdate())]]></Value>
+				<Value><![CDATA[(GETUTCDATE())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -426,7 +427,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_Scene_CreatedBy]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(suser_sname())]]></Value>
+				<Value><![CDATA[(SUSER_SNAME())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -441,7 +442,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_Scene_CreatedUtc]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(getutcdate())]]></Value>
+				<Value><![CDATA[(GETUTCDATE())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -456,7 +457,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_Scene_IsGeographic]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[((0))]]></Value>
+				<Value><![CDATA[(( 0 ))]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -471,7 +472,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_Song_CreatedBy]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(suser_sname())]]></Value>
+				<Value><![CDATA[(SUSER_SNAME())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -486,7 +487,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_Song_CreatedUtc]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(getutcdate())]]></Value>
+				<Value><![CDATA[(GETUTCDATE())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -501,7 +502,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_Song_IsLocalFile]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[((0))]]></Value>
+				<Value><![CDATA[(( 0 ))]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -516,7 +517,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_StreamingService_CreatedBy]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(suser_sname())]]></Value>
+				<Value><![CDATA[(SUSER_SNAME())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -531,7 +532,7 @@
 		</Element>
 		<Element Type="SqlDefaultConstraint" Name="[dbo].[DF_StreamingService_CreatedUtc]">
 			<Property Name="DefaultExpressionScript">
-				<Value><![CDATA[(getutcdate())]]></Value>
+				<Value><![CDATA[(GETUTCDATE())]]></Value>
 			</Property>
 			<Relationship Name="DefiningTable">
 				<Entry>
@@ -632,28 +633,6 @@
 				</Entry>
 			</Relationship>
 		</Element>
-		<Element Type="SqlForeignKeyConstraint" Name="[dbo].[FK_Project_GroupId]">
-			<Relationship Name="Columns">
-				<Entry>
-					<References Name="[dbo].[Project].[GroupId]" />
-				</Entry>
-			</Relationship>
-			<Relationship Name="DefiningTable">
-				<Entry>
-					<References Name="[dbo].[Project]" />
-				</Entry>
-			</Relationship>
-			<Relationship Name="ForeignColumns">
-				<Entry>
-					<References Name="[dbo].[Group].[GroupId]" />
-				</Entry>
-			</Relationship>
-			<Relationship Name="ForeignTable">
-				<Entry>
-					<References Name="[dbo].[Group]" />
-				</Entry>
-			</Relationship>
-		</Element>
 		<Element Type="SqlForeignKeyConstraint" Name="[dbo].[FK_Project_ProjectTypeID]">
 			<Relationship Name="Columns">
 				<Entry>
@@ -689,12 +668,12 @@
 			</Relationship>
 			<Relationship Name="ForeignColumns">
 				<Entry>
-					<References Name="[dbo].[Scene].[SceneId]" />
+					<References Name="[dbo].[Genre].[GenreId]" />
 				</Entry>
 			</Relationship>
 			<Relationship Name="ForeignTable">
 				<Entry>
-					<References Name="[dbo].[Scene]" />
+					<References Name="[dbo].[Genre]" />
 				</Entry>
 			</Relationship>
 		</Element>
@@ -954,6 +933,7 @@
 					<References ExternalSource="BuiltIns" Name="[dbo]" />
 				</Entry>
 			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="4" />
 		</Element>
 		<Element Type="SqlTable" Name="[dbo].[GenreHierarchy]">
 			<Property Name="IsAnsiNullsOn" Value="True" />
@@ -1076,6 +1056,7 @@
 					<References ExternalSource="BuiltIns" Name="[dbo]" />
 				</Entry>
 			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="5" />
 		</Element>
 		<Element Type="SqlIndex" Name="[dbo].[GenreHierarchy].[CIX_GenreHierarchy_GenreId_ParentGenreId]">
 			<Property Name="IsUnique" Value="True" />
@@ -1224,7 +1205,7 @@
 					</Element>
 				</Entry>
 				<Entry>
-					<Element Type="SqlSimpleColumn" Name="[dbo].[Group].[ModifiedBY]">
+					<Element Type="SqlSimpleColumn" Name="[dbo].[Group].[ModifiedBy]">
 						<Relationship Name="TypeSpecifier">
 							<Entry>
 								<Element Type="SqlTypeSpecifier">
@@ -1245,6 +1226,7 @@
 					<References ExternalSource="BuiltIns" Name="[dbo]" />
 				</Entry>
 			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="6" />
 		</Element>
 		<Element Type="SqlPrimaryKeyConstraint" Name="[dbo].[PK_Artist]">
 			<Relationship Name="ColumnSpecifications">
@@ -1263,6 +1245,7 @@
 					<References Name="[dbo].[Artist]" />
 				</Entry>
 			</Relationship>
+			<AttachedAnnotation Disambiguator="3" />
 		</Element>
 		<Element Type="SqlPrimaryKeyConstraint" Name="[dbo].[PK_Genre]">
 			<Relationship Name="ColumnSpecifications">
@@ -1281,6 +1264,7 @@
 					<References Name="[dbo].[Genre]" />
 				</Entry>
 			</Relationship>
+			<AttachedAnnotation Disambiguator="4" />
 		</Element>
 		<Element Type="SqlPrimaryKeyConstraint" Name="[dbo].[PK_GenreHierarchy]">
 			<Property Name="IsClustered" Value="False" />
@@ -1300,6 +1284,7 @@
 					<References Name="[dbo].[GenreHierarchy]" />
 				</Entry>
 			</Relationship>
+			<AttachedAnnotation Disambiguator="5" />
 		</Element>
 		<Element Type="SqlPrimaryKeyConstraint" Name="[dbo].[PK_Group]">
 			<Relationship Name="ColumnSpecifications">
@@ -1318,6 +1303,7 @@
 					<References Name="[dbo].[Group]" />
 				</Entry>
 			</Relationship>
+			<AttachedAnnotation Disambiguator="6" />
 		</Element>
 		<Element Type="SqlPrimaryKeyConstraint" Name="[dbo].[PK_Producer]">
 			<Relationship Name="ColumnSpecifications">
@@ -1336,6 +1322,7 @@
 					<References Name="[dbo].[Producer]" />
 				</Entry>
 			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="7" />
 		</Element>
 		<Element Type="SqlPrimaryKeyConstraint" Name="[dbo].[PK_ProducerGroup]">
 			<Relationship Name="ColumnSpecifications">
@@ -1354,6 +1341,7 @@
 					<References Name="[dbo].[ProducerGroup]" />
 				</Entry>
 			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="8" />
 		</Element>
 		<Element Type="SqlPrimaryKeyConstraint" Name="[dbo].[PK_Project]">
 			<Relationship Name="ColumnSpecifications">
@@ -1372,6 +1360,7 @@
 					<References Name="[dbo].[Project]" />
 				</Entry>
 			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="9" />
 		</Element>
 		<Element Type="SqlPrimaryKeyConstraint" Name="[dbo].[PK_ProjectType]">
 			<Relationship Name="ColumnSpecifications">
@@ -1390,6 +1379,7 @@
 					<References Name="[dbo].[ProjectType]" />
 				</Entry>
 			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="10" />
 		</Element>
 		<Element Type="SqlPrimaryKeyConstraint" Name="[dbo].[PK_Scene]">
 			<Relationship Name="ColumnSpecifications">
@@ -1408,6 +1398,7 @@
 					<References Name="[dbo].[Scene]" />
 				</Entry>
 			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="11" />
 		</Element>
 		<Element Type="SqlPrimaryKeyConstraint" Name="[dbo].[PK_Song]">
 			<Relationship Name="ColumnSpecifications">
@@ -1426,6 +1417,7 @@
 					<References Name="[dbo].[Song]" />
 				</Entry>
 			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="12" />
 		</Element>
 		<Element Type="SqlPrimaryKeyConstraint" Name="[dbo].[PK_StreamingService]">
 			<Relationship Name="ColumnSpecifications">
@@ -1444,6 +1436,7 @@
 					<References Name="[dbo].[StreamingService]" />
 				</Entry>
 			</Relationship>
+			<Annotation Type="SqlInlineConstraintAnnotation" Disambiguator="13" />
 		</Element>
 		<Element Type="SqlTable" Name="[dbo].[Producer]">
 			<Property Name="IsAnsiNullsOn" Value="True" />
@@ -1568,6 +1561,7 @@
 					<References ExternalSource="BuiltIns" Name="[dbo]" />
 				</Entry>
 			</Relationship>
+			<AttachedAnnotation Disambiguator="7" />
 		</Element>
 		<Element Type="SqlTable" Name="[dbo].[ProducerGroup]">
 			<Property Name="IsAnsiNullsOn" Value="True" />
@@ -1708,6 +1702,7 @@
 					<References ExternalSource="BuiltIns" Name="[dbo]" />
 				</Entry>
 			</Relationship>
+			<AttachedAnnotation Disambiguator="8" />
 		</Element>
 		<Element Type="SqlTable" Name="[dbo].[Project]">
 			<Property Name="IsAnsiNullsOn" Value="True" />
@@ -1828,6 +1823,7 @@
 				</Entry>
 				<Entry>
 					<Element Type="SqlSimpleColumn" Name="[dbo].[Project].[CreatedBy]">
+						<Property Name="IsNullable" Value="False" />
 						<Relationship Name="TypeSpecifier">
 							<Entry>
 								<Element Type="SqlTypeSpecifier">
@@ -1873,28 +1869,13 @@
 						</Relationship>
 					</Element>
 				</Entry>
-				<Entry>
-					<Element Type="SqlSimpleColumn" Name="[dbo].[Project].[GroupId]">
-						<Property Name="IsNullable" Value="False" />
-						<Relationship Name="TypeSpecifier">
-							<Entry>
-								<Element Type="SqlTypeSpecifier">
-									<Relationship Name="Type">
-										<Entry>
-											<References ExternalSource="BuiltIns" Name="[int]" />
-										</Entry>
-									</Relationship>
-								</Element>
-							</Entry>
-						</Relationship>
-					</Element>
-				</Entry>
 			</Relationship>
 			<Relationship Name="Schema">
 				<Entry>
 					<References ExternalSource="BuiltIns" Name="[dbo]" />
 				</Entry>
 			</Relationship>
+			<AttachedAnnotation Disambiguator="9" />
 		</Element>
 		<Element Type="SqlTable" Name="[dbo].[ProjectType]">
 			<Property Name="IsAnsiNullsOn" Value="True" />
@@ -1982,7 +1963,7 @@
 					</Element>
 				</Entry>
 				<Entry>
-					<Element Type="SqlSimpleColumn" Name="[dbo].[ProjectType].[ModifiedBY]">
+					<Element Type="SqlSimpleColumn" Name="[dbo].[ProjectType].[ModifiedBy]">
 						<Relationship Name="TypeSpecifier">
 							<Entry>
 								<Element Type="SqlTypeSpecifier">
@@ -2003,6 +1984,7 @@
 					<References ExternalSource="BuiltIns" Name="[dbo]" />
 				</Entry>
 			</Relationship>
+			<AttachedAnnotation Disambiguator="10" />
 		</Element>
 		<Element Type="SqlTable" Name="[dbo].[Scene]">
 			<Property Name="IsAnsiNullsOn" Value="True" />
@@ -2123,7 +2105,7 @@
 					</Element>
 				</Entry>
 				<Entry>
-					<Element Type="SqlSimpleColumn" Name="[dbo].[Scene].[ModifiedBY]">
+					<Element Type="SqlSimpleColumn" Name="[dbo].[Scene].[ModifiedBy]">
 						<Relationship Name="TypeSpecifier">
 							<Entry>
 								<Element Type="SqlTypeSpecifier">
@@ -2144,6 +2126,7 @@
 					<References ExternalSource="BuiltIns" Name="[dbo]" />
 				</Entry>
 			</Relationship>
+			<AttachedAnnotation Disambiguator="11" />
 		</Element>
 		<Element Type="SqlTable" Name="[dbo].[Song]">
 			<Property Name="IsAnsiNullsOn" Value="True" />
@@ -2343,6 +2326,7 @@
 				</Entry>
 				<Entry>
 					<Element Type="SqlSimpleColumn" Name="[dbo].[Song].[CreatedBy]">
+						<Property Name="IsNullable" Value="False" />
 						<Relationship Name="TypeSpecifier">
 							<Entry>
 								<Element Type="SqlTypeSpecifier">
@@ -2394,6 +2378,7 @@
 					<References ExternalSource="BuiltIns" Name="[dbo]" />
 				</Entry>
 			</Relationship>
+			<AttachedAnnotation Disambiguator="12" />
 		</Element>
 		<Element Type="SqlTable" Name="[dbo].[StreamingService]">
 			<Property Name="IsAnsiNullsOn" Value="True" />
@@ -2450,6 +2435,7 @@
 				</Entry>
 				<Entry>
 					<Element Type="SqlSimpleColumn" Name="[dbo].[StreamingService].[CreatedBy]">
+						<Property Name="IsNullable" Value="False" />
 						<Relationship Name="TypeSpecifier">
 							<Entry>
 								<Element Type="SqlTypeSpecifier">
@@ -2501,6 +2487,7 @@
 					<References ExternalSource="BuiltIns" Name="[dbo]" />
 				</Entry>
 			</Relationship>
+			<AttachedAnnotation Disambiguator="13" />
 		</Element>
 		<Element Type="SqlSchema" Name="[reporting]">
 			<Relationship Name="Authorizer">
@@ -2830,13 +2817,13 @@ END]]></Value>
 				</Entry>
 			</Relationship>
 		</Element>
-		<Element Type="SqlExtendedProperty" Name="[SqlColumn].[dbo].[Group].[ModifiedBY].[MS_Description]">
+		<Element Type="SqlExtendedProperty" Name="[SqlColumn].[dbo].[Group].[ModifiedBy].[MS_Description]">
 			<Property Name="Value">
 				<Value><![CDATA[N'Who modified the record']]></Value>
 			</Property>
 			<Relationship Name="Host">
 				<Entry>
-					<References Name="[dbo].[Group].[ModifiedBY]" />
+					<References Name="[dbo].[Group].[ModifiedBy]" />
 				</Entry>
 			</Relationship>
 		</Element>
@@ -3120,13 +3107,13 @@ END]]></Value>
 				</Entry>
 			</Relationship>
 		</Element>
-		<Element Type="SqlExtendedProperty" Name="[SqlColumn].[dbo].[ProjectType].[ModifiedBY].[MS_Description]">
+		<Element Type="SqlExtendedProperty" Name="[SqlColumn].[dbo].[ProjectType].[ModifiedBy].[MS_Description]">
 			<Property Name="Value">
 				<Value><![CDATA[N'Who modified the record']]></Value>
 			</Property>
 			<Relationship Name="Host">
 				<Entry>
-					<References Name="[dbo].[ProjectType].[ModifiedBY]" />
+					<References Name="[dbo].[ProjectType].[ModifiedBy]" />
 				</Entry>
 			</Relationship>
 		</Element>
@@ -3200,13 +3187,13 @@ END]]></Value>
 				</Entry>
 			</Relationship>
 		</Element>
-		<Element Type="SqlExtendedProperty" Name="[SqlColumn].[dbo].[Scene].[ModifiedBY].[MS_Description]">
+		<Element Type="SqlExtendedProperty" Name="[SqlColumn].[dbo].[Scene].[ModifiedBy].[MS_Description]">
 			<Property Name="Value">
 				<Value><![CDATA[N'Who modified the record']]></Value>
 			</Property>
 			<Relationship Name="Host">
 				<Entry>
-					<References Name="[dbo].[Scene].[ModifiedBY]" />
+					<References Name="[dbo].[Scene].[ModifiedBy]" />
 				</Entry>
 			</Relationship>
 		</Element>
