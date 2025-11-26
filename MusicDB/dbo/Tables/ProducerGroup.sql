@@ -1,76 +1,206 @@
-CREATE TABLE [dbo].[ProducerGroup] (
-    [ProducerGroupId]   INT            IDENTITY (1, 1) NOT NULL,
-    [ProducerGroupName] NVARCHAR (255) NOT NULL,
-    [ProducerId]        INT            NOT NULL,
-    [IsActive]          INT            NOT NULL,
-    [CreatedUtc]        DATETIME       NOT NULL,
-    [CreatedBy]         NVARCHAR (255) NOT NULL,
-    [ModifiedUtc]       DATETIME       NULL,
-    [ModifiedBy]        NVARCHAR (255) NULL
+CREATE TABLE [dbo].[ProducerGroup]
+(
+    ProducerGroupId         INT                 IDENTITY(1, 1)
+    , ProducerGroupName     NVARCHAR(255)       NOT NULL
+    , ProducerId            INT                 NOT NULL
+    , IsActive              INT                 NOT NULL
+    , CreatedUtc            DATETIME            NOT NULL
+    , CreatedBy             NVARCHAR(255)       NOT NULL
+    , ModifiedUtc           DATETIME                NULL
+    , ModifiedBy            NVARCHAR(255)           NULL
+    , CONSTRAINT [PK_ProducerGroup] PRIMARY KEY CLUSTERED (ProducerGroupId ASC)
 );
 GO
 
-EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'PK, IDENTITY', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProducerGroup', @level2type = N'COLUMN', @level2name = N'ProducerGroupId';
+-- ******************************
+-- INDEXES
+-- ******************************
+
+-- ******************************
+-- CONSTRAINTS
+-- ******************************
+-- FOREIGN KEYS
+ALTER TABLE [dbo].[ProducerGroup]
+ADD CONSTRAINT [FK_ProducerGroup_ProducerId]
+FOREIGN KEY (ProducerId)
+REFERENCES [dbo].[Producer] (ProducerId);
 GO
 
-EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'The name of the producer group/producer', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProducerGroup', @level2type = N'COLUMN', @level2name = N'ProducerGroupName';
-GO
-
-EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'A member of the producer group. References dbo.Producer', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProducerGroup', @level2type = N'COLUMN', @level2name = N'ProducerId';
-GO
-
-EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'Is the producer group still together/making music?', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProducerGroup', @level2type = N'COLUMN', @level2name = N'IsActive';
-GO
-
-EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'When the record was created in UTC', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProducerGroup', @level2type = N'COLUMN', @level2name = N'CreatedUtc';
-GO
-
-EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'Who created the record', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProducerGroup', @level2type = N'COLUMN', @level2name = N'CreatedBy';
-GO
-
-EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'When the record was modified in UTC', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProducerGroup', @level2type = N'COLUMN', @level2name = N'ModifiedUtc';
-GO
-
-EXECUTE sp_addextendedproperty @name = N'MS_Description', @value = N'Who modified the record', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProducerGroup', @level2type = N'COLUMN', @level2name = N'ModifiedBy';
-GO
-
-EXECUTE sp_addextendedproperty @name = N'CreatedBy', @value = N'Carlos', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProducerGroup';
-GO
-
-EXECUTE sp_addextendedproperty @name = N'CODEOWNER', @value = N'CARLOS', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProducerGroup';
-GO
-
-EXECUTE sp_addextendedproperty @name = N'Description', @value = N'Data about groups of producers or individual producers', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProducerGroup';
-GO
-
-EXECUTE sp_addextendedproperty @name = N'CreatedDate', @value = N'11/22/2025', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProducerGroup';
-GO
-
-EXECUTE sp_addextendedproperty @name = N'SQLVERSION', @value = N'SQL Azure 12.0.2000.8', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProducerGroup';
-GO
-
-EXECUTE sp_addextendedproperty @name = N'ModifiedBy', @value = N'', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProducerGroup';
-GO
-
-EXECUTE sp_addextendedproperty @name = N'ModifiedDate', @value = N'', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProducerGroup';
-GO
-
-EXECUTE sp_addextendedproperty @name = N'Version', @value = N'1.0', @level0type = N'SCHEMA', @level0name = N'dbo', @level1type = N'TABLE', @level1name = N'ProducerGroup';
+-- DEFAULTS
+ALTER TABLE [dbo].[ProducerGroup]
+ADD CONSTRAINT [DF_ProducerGroup_CreatedUtc]
+DEFAULT (GETUTCDATE())
+FOR [CreatedUtc];
 GO
 
 ALTER TABLE [dbo].[ProducerGroup]
-    ADD CONSTRAINT [PK_ProducerGroup] PRIMARY KEY CLUSTERED ([ProducerGroupId] ASC);
+ADD CONSTRAINT [DF_ProducerGroup_CreatedBy]
+DEFAULT (SUSER_SNAME())
+FOR [CreatedBy];
 GO
 
-ALTER TABLE [dbo].[ProducerGroup]
-    ADD CONSTRAINT [DF_ProducerGroup_CreatedBy] DEFAULT (suser_sname()) FOR [CreatedBy];
+-- ******************************
+-- EXTENDED PROPERTIES
+-- ******************************
+EXEC sys.sp_addextendedproperty
+    @name = N'Description'
+    , @value = N'Data about groups of producers or individual producers'
+    , @level0type = N'SCHEMA'
+    , @level0name = N'dbo'
+    , @level1type = N'TABLE'
+    , @level1name = N'ProducerGroup';
 GO
 
-ALTER TABLE [dbo].[ProducerGroup]
-    ADD CONSTRAINT [DF_ProducerGroup_CreatedUtc] DEFAULT (getutcdate()) FOR [CreatedUtc];
+EXEC sys.sp_addextendedproperty
+    @name = N'CODEOWNER'
+    , @value = N'CARLOS'
+    , @level0type = N'SCHEMA'
+    , @level0name = N'dbo'
+    , @level1type = N'TABLE'
+    , @level1name = N'ProducerGroup';
 GO
 
-ALTER TABLE [dbo].[ProducerGroup]
-    ADD CONSTRAINT [FK_ProducerGroup_ProducerId] FOREIGN KEY ([ProducerId]) REFERENCES [dbo].[Producer] ([ProducerId]);
+EXEC sys.sp_addextendedproperty
+    @name = N'SQLVERSION'
+    , @value = N'SQL Azure 12.0.2000.8'
+    , @level0type = N'SCHEMA'
+    , @level0name = N'dbo'
+    , @level1type = N'TABLE'
+    , @level1name = N'ProducerGroup';
 GO
 
+EXEC sys.sp_addextendedproperty
+    @name = N'Version'
+    , @value = N'1.0'
+    , @level0type = N'SCHEMA'
+    , @level0name = N'dbo'
+    , @level1type = N'TABLE'
+    , @level1name = N'ProducerGroup';
+GO
+
+EXEC sys.sp_addextendedproperty
+    @name = N'CreatedDate'
+    , @value = N'11/22/2025'
+    , @level0type = N'SCHEMA'
+    , @level0name = N'dbo'
+    , @level1type = N'TABLE'
+    , @level1name = N'ProducerGroup';
+GO
+
+EXEC sys.sp_addextendedproperty
+    @name = N'CreatedBy'
+    , @value = N'Carlos'
+    , @level0type = N'SCHEMA'
+    , @level0name = N'dbo'
+    , @level1type = N'TABLE'
+    , @level1name = N'ProducerGroup';
+GO
+
+EXEC sys.sp_addextendedproperty
+    @name = N'ModifiedDate'
+    , @value = N''
+    , @level0type = N'SCHEMA'
+    , @level0name = N'dbo'
+    , @level1type = N'TABLE'
+    , @level1name = N'ProducerGroup';
+GO
+
+EXEC sys.sp_addextendedproperty
+    @name = N'ModifiedBy'
+    , @value = N''
+    , @level0type = N'SCHEMA'
+    , @level0name = N'dbo'
+    , @level1type = N'TABLE'
+    , @level1name = N'ProducerGroup';
+GO
+
+-- ******************************
+-- FIELD COMMENTS
+-- ******************************
+EXEC sys.sp_addextendedproperty
+    @name = N'MS_Description'
+    , @value = N'PK, IDENTITY'
+    , @level0type = N'SCHEMA'
+    , @level0name = N'dbo'
+    , @level1type = N'TABLE'
+    , @level1name = N'ProducerGroup'
+    , @level2type = N'COLUMN'
+    , @level2name = N'ProducerGroupId';
+GO
+
+EXEC sys.sp_addextendedproperty
+    @name = N'MS_Description'
+    , @value = N'The name of the producer group/producer'
+    , @level0type = N'SCHEMA'
+    , @level0name = N'dbo'
+    , @level1type = N'TABLE'
+    , @level1name = N'ProducerGroup'
+    , @level2type = N'COLUMN'
+    , @level2name = N'ProducerGroupName';
+GO
+
+EXEC sys.sp_addextendedproperty
+    @name = N'MS_Description'
+    , @value = N'A member of the producer group. References dbo.Producer'
+    , @level0type = N'SCHEMA'
+    , @level0name = N'dbo'
+    , @level1type = N'TABLE'
+    , @level1name = N'ProducerGroup'
+    , @level2type = N'COLUMN'
+    , @level2name = N'ProducerId';
+GO
+
+EXEC sys.sp_addextendedproperty
+    @name = N'MS_Description'
+    , @value = N'Is the producer group still together/making music?'
+    , @level0type = N'SCHEMA'
+    , @level0name = N'dbo'
+    , @level1type = N'TABLE'
+    , @level1name = N'ProducerGroup'
+    , @level2type = N'COLUMN'
+    , @level2name = N'IsActive';
+GO
+
+EXEC sys.sp_addextendedproperty
+    @name = N'MS_Description'
+    , @value = N'When the record was created in UTC'
+    , @level0type = N'SCHEMA'
+    , @level0name = N'dbo'
+    , @level1type = N'TABLE'
+    , @level1name = N'ProducerGroup'
+    , @level2type = N'COLUMN'
+    , @level2name = N'CreatedUtc'
+GO
+
+EXEC sys.sp_addextendedproperty
+    @name = N'MS_Description'
+    , @value = N'Who created the record'
+    , @level0type = N'SCHEMA'
+    , @level0name = N'dbo'
+    , @level1type = N'TABLE'
+    , @level1name = N'ProducerGroup'
+    , @level2type = N'COLUMN'
+    , @level2name = N'CreatedBy'
+GO
+
+EXEC sys.sp_addextendedproperty
+    @name = N'MS_Description'
+    , @value = N'When the record was modified in UTC'
+    , @level0type = N'SCHEMA'
+    , @level0name = N'dbo'
+    , @level1type = N'TABLE'
+    , @level1name = N'ProducerGroup'
+    , @level2type = N'COLUMN'
+    , @level2name = N'ModifiedUtc'
+GO
+
+EXEC sys.sp_addextendedproperty
+    @name = N'MS_Description'
+    , @value = N'Who modified the record'
+    , @level0type = N'SCHEMA'
+    , @level0name = N'dbo'
+    , @level1type = N'TABLE'
+    , @level1name = N'ProducerGroup'
+    , @level2type = N'COLUMN'
+    , @level2name = N'ModifiedBy'
+GO
