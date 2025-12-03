@@ -1,4 +1,4 @@
-/*
+﻿/*
 -- ======================================================
 -- Author:        Carlos Gonzalez
 -- Date Created:  2025-11-23
@@ -14,6 +14,7 @@ AS
 
 BEGIN
 BEGIN TRY
+SET NOCOUNT ON
 
 SELECT
   sts.ServiceId
@@ -30,5 +31,5 @@ BEGIN CATCH
 END CATCH
 
 END
-GO
 
+GO
