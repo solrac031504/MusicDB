@@ -1,0 +1,8 @@
+# Build and publish MusicDB
+on:
+  push:
+    branches:
+      - main
+  pull_requests:
+    branches:
+      - main
