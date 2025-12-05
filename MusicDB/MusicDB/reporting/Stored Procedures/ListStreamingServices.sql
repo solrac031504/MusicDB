@@ -30,3 +30,17 @@ BEGIN CATCH
 END CATCH
 
 END
+
+GO
+
+-- ******************************
+-- EXTENDED PROPERTIES
+-- ******************************
+EXEC sys.sp_addextendedproperty
+	@name = N'Description'
+	, @value = N'Lists all streaming services for parameter selection'
+	, @level0type = N'SCHEMA'
+	, @level0name = N'reporting'
+	, @level1type = N'PROCEDURE'
+	, @level1name = N'ListStreamingServices';
+GO
