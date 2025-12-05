@@ -1,5 +1,0 @@
-c:\Users\carlo\OneDrive\Documents\MusicDB\MusicDB\bin\Debug\MusicDB.dacpac
-c:\Users\carlo\OneDrive\Documents\MusicDB\MusicDB\obj\Debug\Model.xml
-c:\Users\carlo\OneDrive\Documents\MusicDB\MusicDB\obj\Debug\refactor.xml
-c:\Users\carlo\OneDrive\Documents\MusicDB\MusicDB\obj\Debug\postdeploy.sql
-c:\Users\carlo\OneDrive\Documents\MusicDB\MusicDB\obj\Debug\predeploy.sql

@@ -1,0 +1,2 @@
+﻿CREATE USER [saCarlos] WITHOUT LOGIN;
+
