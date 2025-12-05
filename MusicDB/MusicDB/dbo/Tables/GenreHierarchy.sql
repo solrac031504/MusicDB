@@ -1,12 +1,12 @@
 ﻿CREATE TABLE [dbo].[GenreHierarchy]
 (
     counter                 INT                 IDENTITY(1, 1)
-    , GenreId               INT                 NOT NULL
-    , ParentGenreId         INT                     NULL
-    , CreatedUtc            DATETIME            NOT NULL        CONSTRAINT [DF_GenreHierarchy_CreatedUtc]   DEFAULT (GETUTCDATE())
-    , CreatedBy             NVARCHAR(255)       NOT NULL        CONSTRAINT [DF_GenreHierarchy_CreatedBy]    DEFAULT (SUSER_SNAME())
-    , ModifiedUtc           DATETIME                NULL
-    , ModifiedBy            NVARCHAR(255)           NULL
+    , [GenreId]             INT                 NOT NULL
+    , [ParentGenreId]       INT                     NULL
+    , [CreatedUtc]          DATETIME            NOT NULL        CONSTRAINT [DF_GenreHierarchy_CreatedUtc]   DEFAULT (GETUTCDATE())
+    , [CreatedBy]           NVARCHAR(255)       NOT NULL        CONSTRAINT [DF_GenreHierarchy_CreatedBy]    DEFAULT (SUSER_SNAME())
+    , [ModifiedUtc]         DATETIME                NULL
+    , [ModifiedBy]          NVARCHAR(255)           NULL
     , CONSTRAINT [PK_GenreHierarchy] PRIMARY KEY NONCLUSTERED (counter ASC)
 );
 GO
