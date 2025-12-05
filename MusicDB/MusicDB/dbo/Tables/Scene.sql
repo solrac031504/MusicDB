@@ -1,13 +1,13 @@
 ﻿CREATE TABLE [dbo].[Scene]
 (
-    SceneId                 INT                 IDENTITY(1, 1)
-    , SceneName             NVARCHAR(255)       NOT NULL
-    , [Description]         NVARCHAR(4000)      NOT NULL
-    , IsGeographic          INT                 NOT NULL        CONSTRAINT [DF_Scene_IsGeographic]  DEFAULT (( 0 ))
-    , CreatedUtc            DATETIME            NOT NULL        CONSTRAINT [DF_Scene_CreatedUtc]    DEFAULT (GETUTCDATE())
-    , CreatedBy             NVARCHAR(255)       NOT NULL        CONSTRAINT [DF_Scene_CreatedBy]     DEFAULT (SUSER_SNAME())
-    , ModifiedUtc           DATETIME                NULL
-    , ModifiedBy            NVARCHAR(255)           NULL
+    [SceneId]                 INT                 IDENTITY(1, 1)
+    , [SceneName]             NVARCHAR(255)       NOT NULL
+    , [Description]           NVARCHAR(4000)      NOT NULL
+    , [IsGeographic]          INT                 NOT NULL        CONSTRAINT [DF_Scene_IsGeographic]  DEFAULT (( 0 ))
+    , [CreatedUtc]            DATETIME            NOT NULL        CONSTRAINT [DF_Scene_CreatedUtc]    DEFAULT (GETUTCDATE())
+    , [CreatedBy]             NVARCHAR(255)       NOT NULL        CONSTRAINT [DF_Scene_CreatedBy]     DEFAULT (SUSER_SNAME())
+    , [ModifiedUtc]           DATETIME                NULL
+    , [ModifiedBy]            NVARCHAR(255)           NULL
     , CONSTRAINT [PK_Scene] PRIMARY KEY CLUSTERED (SceneId ASC)
 );
 GO
