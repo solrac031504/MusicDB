@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build">
-  <Sdk Name="Microsoft.Build.Sql" Version="2.0.0" />
+  <Sdk Name="Microsoft.Build.Sql" Version="0.1.12-preview" />
   <PropertyGroup>
     <Name>MusicDB</Name>
     <ProjectGuid>{ccbc38d1-9149-467c-8282-81c3b2808031}</ProjectGuid>
@@ -8,6 +8,8 @@
     <ModelCollation>1033, CI</ModelCollation>
     <TargetDatabaseSet>True</TargetDatabaseSet>
     <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+	<SqlServerVersion>Sql150</SqlServerVersion>
+	<TargetPlatform>AzureSqlDatabase</TargetPlatform>
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="dbo\" />

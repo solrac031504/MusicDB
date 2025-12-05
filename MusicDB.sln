@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
 VisualStudioVersion = 18.0.11222.15 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "MusicDB", "MusicDB.sqlproj", "{CCBC38D1-9149-467C-8282-81C3B2808031}"
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "MusicDB", "MusicDB\MusicDB.sqlproj", "{CCBC38D1-9149-467C-8282-81C3B2808031}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
