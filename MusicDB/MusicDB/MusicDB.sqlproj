@@ -79,6 +79,6 @@
     <Build Include="Security\saCarlos.sql" />
     <Build Include="Security\RoleMemberships.sql" />
     <Build Include="reporting\Stored Procedures\ListStreamingServices.sql" />
-    <Build Include="Security\reporting.sql" />
+    <Build Include="reporting\reporting.sql" />
   </ItemGroup>
 </Project>
