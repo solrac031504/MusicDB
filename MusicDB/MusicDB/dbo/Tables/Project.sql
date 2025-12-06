@@ -2,6 +2,7 @@
 (
     ProjectId               INT                 IDENTITY(1, 1)
     , ProjectName           NVARCHAR(255)       NOT NULL
+    , GroupId               INT                 NOT NULL
     , SceneId               INT                     NULL
     , ProjectTypeId         INT                 NOT NULL
     , ReleaseDate           DATE                NOT NULL
@@ -22,6 +23,12 @@ GO
 -- CONSTRAINTS
 -- ******************************
 -- FOREIGN KEYS
+ALTER TABLE [dbo].[Project]
+ADD CONSTRAINT [FK_Project_GroupId]
+FOREIGN KEY (GroupId)
+REFERENCES [dbo].[Group] (GroupId);
+GO
+
 ALTER TABLE [dbo].[Project]
 ADD CONSTRAINT [FK_Project_SceneId]
 FOREIGN KEY (SceneId)
