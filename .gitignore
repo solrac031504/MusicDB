@@ -428,4 +428,4 @@ FodyWeavers.xsd
 *.msp
 
 # Ignore Security folder
-*/Security
+**/Security
