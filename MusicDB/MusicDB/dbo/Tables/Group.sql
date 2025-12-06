@@ -2,7 +2,6 @@
 (
     [GroupId]                 INT                 IDENTITY(1, 1)
     , [GroupName]             NVARCHAR(255)       NOT NULL
-    , [ArtistId]              INT                 NOT NULL
     , [IsActive]              INT                 NOT NULL
     , [CreatedUtc]            DATETIME            NOT NULL        CONSTRAINT [DF_Group_CreatedUtc]    DEFAULT (GETUTCDATE())
     , [CreatedBy]             NVARCHAR(255)       NOT NULL        CONSTRAINT [DF_Group_CreatedBy]     DEFAULT (SUSER_SNAME())
@@ -10,20 +9,6 @@
     , [ModifiedBy]            NVARCHAR(255)           NULL
     , CONSTRAINT [PK_Group] PRIMARY KEY CLUSTERED (GroupId ASC)
 );
-GO
-
--- ******************************
--- INDEXES
--- ******************************
-
--- ******************************
--- CONSTRAINTS
--- ******************************
--- FOREIGN KEYS
-ALTER TABLE [dbo].[Group]
-ADD CONSTRAINT [FK_Group_ArtistId]
-FOREIGN KEY (ArtistId)
-REFERENCES [dbo].[Artist] (ArtistId);
 GO
 
 -- ******************************
@@ -124,17 +109,6 @@ EXEC sys.sp_addextendedproperty
     , @level1name = N'Group'
     , @level2type = N'COLUMN'
     , @level2name = N'GroupName';
-GO
-
-EXEC sys.sp_addextendedproperty
-    @name = N'MS_Description'
-    , @value = N'The artist or one of the artists belonging to the group. References dbo.Artist'
-    , @level0type = N'SCHEMA'
-    , @level0name = N'dbo'
-    , @level1type = N'TABLE'
-    , @level1name = N'Group'
-    , @level2type = N'COLUMN'
-    , @level2name = N'ArtistId';
 GO
 
 EXEC sys.sp_addextendedproperty

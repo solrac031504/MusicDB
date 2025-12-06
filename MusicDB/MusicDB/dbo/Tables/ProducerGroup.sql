@@ -2,7 +2,6 @@
 (
     ProducerGroupId         INT                 IDENTITY(1, 1)
     , ProducerGroupName     NVARCHAR(255)       NOT NULL
-    , ProducerId            INT                 NOT NULL
     , IsActive              INT                 NOT NULL
     , CreatedUtc            DATETIME            NOT NULL        CONSTRAINT [DF_ProducerGroup_CreatedUtc]    DEFAULT (GETUTCDATE())
     , CreatedBy             NVARCHAR(255)       NOT NULL        CONSTRAINT [DF_ProducerGroup_CreatedBy]     DEFAULT (SUSER_SNAME())
@@ -10,16 +9,6 @@
     , ModifiedBy            NVARCHAR(255)           NULL
     , CONSTRAINT [PK_ProducerGroup] PRIMARY KEY CLUSTERED (ProducerGroupId ASC)
 );
-GO
-
--- ******************************
--- CONSTRAINTS
--- ******************************
--- FOREIGN KEYS
-ALTER TABLE [dbo].[ProducerGroup]
-ADD CONSTRAINT [FK_ProducerGroup_ProducerId]
-FOREIGN KEY (ProducerId)
-REFERENCES [dbo].[Producer] (ProducerId);
 GO
 
 -- ******************************
@@ -120,17 +109,6 @@ EXEC sys.sp_addextendedproperty
     , @level1name = N'ProducerGroup'
     , @level2type = N'COLUMN'
     , @level2name = N'ProducerGroupName';
-GO
-
-EXEC sys.sp_addextendedproperty
-    @name = N'MS_Description'
-    , @value = N'A member of the producer group. References dbo.Producer'
-    , @level0type = N'SCHEMA'
-    , @level0name = N'dbo'
-    , @level1type = N'TABLE'
-    , @level1name = N'ProducerGroup'
-    , @level2type = N'COLUMN'
-    , @level2name = N'ProducerId';
 GO
 
 EXEC sys.sp_addextendedproperty
