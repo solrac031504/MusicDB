@@ -1,0 +1,19 @@
+name: 'MusicDB Build Only'
+
+on:
+	push:
+		branches:
+			- main
+	pull_request:
+		branches:
+			- main
+		paths:
+			- 'MusicDB/**'
+			- '.github/workflows/**'
+jobs:
+	build-and-validate:
+		runs-on: windows-latest
+		
+		steps:
+		 - name: 'Checkout repo'
+			uses: 
