@@ -1,6 +1,9 @@
 name: SQL Database CI/CD
 
 on:
+  workflow_dispatch:
+    branches:
+      - 'Carlos/**'
   push:
     branches:
       - main
