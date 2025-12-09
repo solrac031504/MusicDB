@@ -1,19 +1,173 @@
-name: 'MusicDB Build Only'
+name: SQL Database CI/CD
 
 on:
-	push:
-		branches:
-			- main
-	pull_request:
-		branches:
-			- main
-		paths:
-			- 'MusicDB/**'
-			- '.github/workflows/**'
+  push:
+    branches:
+      - main
+    paths:
+      - 'MusicDB/**'
+      - '.github/workflows/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'MusicDB/**'
+      - '.github/workflows/**'
+
 jobs:
-	build-and-validate:
-		runs-on: windows-latest
-		
-		steps:
-		 - name: 'Checkout repo'
-			uses: 
+  build-and-validate:
+    runs-on: windows-latest
+    outputs:
+      dacpac-path: ${{ steps.find-dacpac.outputs.dacpac-path }}
+      script-generated: ${{ steps.generate-script.outputs.success }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.1
+
+      - name: Restore NuGet Packages
+        run: |
+          nuget restore MusicDB.sln || true
+
+      - name: Build Database Project
+        run: |
+          msbuild MusicDB.sqlproj `
+            /p:Configuration=Release `
+            /p:SqlTargetName=MusicDB `
+            /p:OutDir=.\bin\Release\ `
+            /p:CreateScriptDatabase=true
+
+      - name: Find Dacpac File
+        id: find-dacpac
+        run: |
+          $dacpac = Get-ChildItem -Path . -Filter "*.dacpac" -Recurse | Select-Object -First 1 -ExpandProperty FullName
+          if ($dacpac) {
+            echo "dacpac-path=$dacpac" >> $env:GITHUB_OUTPUT
+            echo "Found dacpac: $dacpac"
+          } else {
+            echo "No dacpac file found"
+            exit 1
+          }
+
+      - name: Generate Deploy Script
+        id: generate-script
+        env:
+          SQL_PACKAGE_PATH: "C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin\\SqlPackage.exe"
+        run: |
+          # Find sqlpackage if not in default location
+          if (-not (Test-Path $env:SQL_PACKAGE_PATH)) {
+            $sqlPackage = Get-ChildItem -Path "C:\" -Filter "sqlpackage.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
+            if ($sqlPackage) {
+              $env:SQL_PACKAGE_PATH = $sqlPackage
+            }
+          }
+          
+          # Generate SQL script
+          & "$env:SQL_PACKAGE_PATH" /Action:Script `
+            /SourceFile:"${{ steps.find-dacpac.outputs.dacpac-path }}" `
+            /TargetConnectionString:"${{ secrets.AZURE_SQL_CONNECTION_STRING }}" `
+            /OutputPath:"deploy.sql" `
+            /p:ScriptDatabaseOptions=false `
+            /p:IncludeCompositeObjects=true
+          
+          # Verify script was created
+          if (Test-Path "deploy.sql") {
+            $lineCount = (Get-Content deploy.sql | Measure-Object -Line).Lines
+            echo "Generated script with $lineCount lines"
+            echo "success=true" >> $env:GITHUB_OUTPUT
+          } else {
+            echo "Script generation failed"
+            exit 1
+          }
+
+      - name: Upload Script for Review
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-script
+          path: ./deploy.sql
+          retention-days: 7
+
+      - name: Upload Dacpac Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: database-dacpac
+          path: ${{ steps.find-dacpac.outputs.dacpac-path }}
+          retention-days: 7
+
+  # deploy:
+  #   needs: build-and-validate
+  #   if: needs.build-and-validate.outputs.script-generated == 'true'
+  #   runs-on: windows-latest
+  #   environment:
+  #     name: production
+  #     url: https://portal.azure.com
+  #   steps:
+  #     - name: Download Artifacts
+  #       uses: actions/download-artifact@v4
+  #       with:
+  #         name: database-dacpac
+          
+  #     - name: Find Downloaded Dacpac
+  #       id: find-downloaded-dacpac
+  #       run: |
+  #         $dacpac = Get-ChildItem -Path . -Filter "*.dacpac" -Recurse | Select-Object -First 1 -ExpandProperty FullName
+  #         if ($dacpac) {
+  #           echo "dacpac-path=$dacpac" >> $env:GITHUB_OUTPUT
+  #           echo "Found dacpac for deployment: $dacpac"
+  #         } else {
+  #           echo "No dacpac file found after download"
+  #           exit 1
+  #         }
+
+  #     - name: Manual Approval Step
+  #       if: github.event_name != 'workflow_dispatch'
+  #       run: |
+  #         Write-Host "=============================================="
+  #         Write-Host "REQUIRED: Manual Deployment Approval"
+  #         Write-Host "=============================================="
+  #         Write-Host ""
+  #         Write-Host "Review the deployment script in the 'build-and-validate' job artifacts."
+  #         Write-Host ""
+  #         Write-Host "To proceed with deployment:"
+  #         Write-Host "1. Go to the GitHub Actions tab"
+  #         Write-Host "2. Select this workflow run"
+  #         Write-Host "3. Look under 'deploy' job"
+  #         Write-Host "4. Click 'Approve and deploy' (if environment has approvals)"
+  #         Write-Host "OR"
+  #         Write-Host "Re-run workflow manually with workflow_dispatch"
+  #         Write-Host ""
+  #         Write-Host "Deployment will proceed automatically if this workflow"
+  #         Write-Host "was triggered manually via 'Run workflow' button."
+  #         Write-Host "=============================================="
+
+  #     - name: Interactive Confirmation
+  #       if: github.event_name == 'workflow_dispatch'
+  #       run: |
+  #         $response = Read-Host "Type 'deploy' to proceed with database deployment"
+  #         if ($response -ne 'deploy') {
+  #           Write-Error "Deployment cancelled by user"
+  #           exit 1
+  #         }
+  #         Write-Host "Proceeding with deployment..."
+
+  #     - name: Azure Login
+  #       uses: azure/login@v2
+  #       with:
+  #         creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+  #     - name: Deploy to Azure SQL
+  #       uses: azure/sql-action@v2.3
+  #       with:
+  #         connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+  #         path: ${{ steps.find-downloaded-dacpac.outputs.dacpac-path }}
+  #         action: 'publish'
+  #         arguments: '--publish-options:'
+  #         # Additional arguments can be added here
+  #         # /p:BlockOnPossibleDataLoss=false
+  #         # /p:DropObjectsNotInSource=true
+
+  #     - name: Azure Logout
+  #       run: |
+  #         az logout
+  #       if: always()
