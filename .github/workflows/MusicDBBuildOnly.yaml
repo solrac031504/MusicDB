@@ -36,7 +36,7 @@ jobs:
 
       - name: Build Database Project
         run: |
-          msbuild "$(Get-Location)\MusicDB\MusicDB.sqlproj" `
+          msbuild "**/*.sqlproj" `
             /p:Configuration=Release `
             /p:SqlTargetName=MusicDB `
             /p:OutDir="$(Get-Location)\bin\Release\" `
