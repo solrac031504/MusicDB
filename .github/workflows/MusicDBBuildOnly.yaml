@@ -32,7 +32,7 @@ jobs:
 
       - name: Restore NuGet Packages
         run: |
-          nuget restore MusicDB.slnx || true
+          nuget restore "$(Get-Location)\MusicDB.slnx" || true
 
       - name: Build Database Project
         run: |
