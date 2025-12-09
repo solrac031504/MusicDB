@@ -32,11 +32,11 @@ jobs:
 
       - name: Restore NuGet Packages
         run: |
-          nuget restore MusicDB.sln || true
+          nuget restore MusicDB.slnx || true
 
       - name: Build Database Project
         run: |
-          msbuild "**/*.sqlproj" `
+          msbuild "$(Get-Location)\MusicDB\MusicDB.sqlproj" `
             /p:Configuration=Release `
             /p:SqlTargetName=MusicDB `
             /p:OutDir="$(Get-Location)\bin\Release\" `
