@@ -36,10 +36,10 @@ jobs:
 
       - name: Build Database Project
         run: |
-          msbuild MusicDB.sqlproj `
+          msbuild "$(Get-Location)\MusicDB\MusicDB.sqlproj" `
             /p:Configuration=Release `
             /p:SqlTargetName=MusicDB `
-            /p:OutDir=.\bin\Release\ `
+            /p:OutDir="$(Get-Location)\bin\Release\" `
             /p:CreateScriptDatabase=true
 
       - name: Find Dacpac File
