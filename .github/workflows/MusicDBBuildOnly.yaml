@@ -69,7 +69,7 @@ jobs:
           msbuild "$($sqlprojPath.FullName)" `
             /p:Configuration=Release `
             /p:SqlTargetName=MusicDB `
-            /p:OutDir="$(Get-Location)\bin\Release\" `
+            /p:OutDir="$(Get-Location)\MusicDB\bin\Release\" `
             /p:CreateScriptDatabase=true
 
       - name: Find Dacpac File
@@ -83,6 +83,24 @@ jobs:
             echo "No dacpac file found"
             exit 1
           }
+
+      - name: Create Firewall rule
+        id: firewall
+        run: |
+          # Add runner IP to the firewall rule
+          $ip = (Invoke-RestMethod -Uri "https://api.ipify.org").Trim()
+          $ruleName = "gha-run-${{ github.run_id }}"
+
+          # Add firewall rule
+          az sql server firewall-rule create \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --server ${{ secrets.AZURE_SQL_SERVER_NAME }} \
+            --name "$ruleName"
+            --start-ip-address "$ip" \
+            --end-ip-address "$ip"
+
+          # Save output
+          echo "rule-name=$ruleName" >> $env:GITHUB_OUTPUT
 
       - name: Generate Deploy Script
         id: generate-script
@@ -122,6 +140,15 @@ jobs:
             echo "Script generation failed"
             exit 1
           }
+
+      - name: Cleanup Firewall rule
+        if: always()
+        run: |
+          # Remove created firewall rule
+          az sql server firewall-rule delete \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --server ${{ secrets.AZURE_SQL_SERVER_NAME }} \
+            --name "${{ steps.firewall.outputs.rule-name }}"
 
       - name: Upload Script for Review
         uses: actions/upload-artifact@v4
