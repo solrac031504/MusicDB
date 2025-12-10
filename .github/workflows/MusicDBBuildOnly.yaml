@@ -39,7 +39,7 @@ jobs:
 
           if ($slnxPath)
           {
-            Write-Host "Restoring nuget packages using $slnxPath"
+            Write-Host "Restoring nuget packages using $($slnxPath.FullName)"
           }
           else
           {
@@ -47,11 +47,26 @@ jobs:
             exit 1
           }
 
-          nuget restore MusicDB.slnx || true
+          nuget restore "$($slnxPath.FullName)" || true
 
       - name: Build Database Project
         run: |
-          msbuild "$(Get-Location)\MusicDB\MusicDB.sqlproj" `
+          # Find the file
+          $root = Get-Location
+
+          $sqlprojPath = Get-ChildItem -Path $root -Filter "MusicDB.sqlproj" -Recurse
+
+          if ($sqlprojPath)
+          {
+            Write-Host "Building SQL DB Project $($sqlprojPath.FullName)"
+          }
+          else
+          {
+            Write-Error "No file found"
+            exit 1
+          }
+
+          msbuild "$($sqlprojPath.FullName)" `
             /p:Configuration=Release `
             /p:SqlTargetName=MusicDB `
             /p:OutDir="$(Get-Location)\bin\Release\" `
