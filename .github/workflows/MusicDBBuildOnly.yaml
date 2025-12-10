@@ -32,7 +32,22 @@ jobs:
 
       - name: Restore NuGet Packages
         run: |
-          nuget restore "$(Get-Location)\MusicDB.slnx" || true
+          # Find the file First
+          $root = Get-Location
+
+          $slnxPath = Get-ChildItem -Path $root -Filter "MusicDB.slnx" -Recurse
+
+          if ($slnxPath)
+          {
+            Write-Host "Restoring nuget packages using $slnxPath"
+          }
+          else
+          {
+            Write-Error "No file found"
+            exit 1
+          }
+
+          nuget restore MusicDB.slnx || true
 
       - name: Build Database Project
         run: |
