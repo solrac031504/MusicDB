@@ -21,9 +21,6 @@ on:
 jobs:
   build-and-validate:
     runs-on: windows-latest
-    environment:
-      name: production
-      url: https://portal.azure.com
     outputs:
       dacpac-path: ${{ steps.find-dacpac.outputs.dacpac-path }}
       script-generated: ${{ steps.generate-script.outputs.success }}
@@ -139,9 +136,6 @@ jobs:
   #   needs: build-and-validate
   #   if: needs.build-and-validate.outputs.script-generated == 'true'
   #   runs-on: windows-latest
-  #   environment:
-  #     name: production
-  #     url: https://portal.azure.com
   #   steps:
   #     - name: Download Artifacts
   #       uses: actions/download-artifact@v4
