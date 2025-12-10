@@ -86,17 +86,18 @@ jobs:
 
       - name: Create Firewall rule
         id: firewall
+        shell: pwsh
         run: |
           # Add runner IP to the firewall rule
           $ip = (Invoke-RestMethod -Uri "https://api.ipify.org").Trim()
           $ruleName = "gha-run-${{ github.run_id }}"
 
           # Add firewall rule
-          az sql server firewall-rule create \
-            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --server ${{ secrets.AZURE_SQL_SERVER_NAME }} \
+          az sql server firewall-rule create `
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} `
+            --server ${{ secrets.AZURE_SQL_SERVER_NAME }} `
             --name "$ruleName"
-            --start-ip-address "$ip" \
+            --start-ip-address "$ip" `
             --end-ip-address "$ip"
 
           # Save output
@@ -143,11 +144,12 @@ jobs:
 
       - name: Cleanup Firewall rule
         if: always()
+        shell: pwsh
         run: |
           # Remove created firewall rule
-          az sql server firewall-rule delete \
-            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
-            --server ${{ secrets.AZURE_SQL_SERVER_NAME }} \
+          az sql server firewall-rule delete `
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} `
+            --server ${{ secrets.AZURE_SQL_SERVER_NAME }} `
             --name "${{ steps.firewall.outputs.rule-name }}"
 
       - name: Upload Script for Review
