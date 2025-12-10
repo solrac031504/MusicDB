@@ -21,6 +21,9 @@ on:
 jobs:
   build-and-validate:
     runs-on: windows-latest
+    environment:
+      name: production
+      url: https://portal.azure.com
     outputs:
       dacpac-path: ${{ steps.find-dacpac.outputs.dacpac-path }}
       script-generated: ${{ steps.generate-script.outputs.success }}
@@ -86,19 +89,22 @@ jobs:
 
       - name: Generate Deploy Script
         id: generate-script
-        env:
-          SQL_PACKAGE_PATH: "C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin\\SqlPackage.exe"
         run: |
-          # Find sqlpackage if not in default location
-          if (-not (Test-Path $env:SQL_PACKAGE_PATH)) {
-            $sqlPackage = Get-ChildItem -Path "C:\" -Filter "sqlpackage.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty FullName
-            if ($sqlPackage) {
-              $env:SQL_PACKAGE_PATH = $sqlPackage
-            }
+          # Get the path to sqlpackage
+          $sqlpackagePath = Get-Command sqlpackage -ErrorAction SilentlyContinue
+
+          if ($sqlpackagePath)
+          {
+            Write-Host "Using sqlpackage at $($sqlpackagePath)"
+          }
+          else
+          {
+            Write-Error "No file found"
+            exit 1
           }
           
           # Generate SQL script
-          & "$env:SQL_PACKAGE_PATH" /Action:Script `
+          & "$($sqlpackagePath.FullName)" /Action:Script `
             /SourceFile:"${{ steps.find-dacpac.outputs.dacpac-path }}" `
             /TargetConnectionString:"${{ secrets.AZURE_SQL_CONNECTION_STRING }}" `
             /OutputPath:"deploy.sql" `
