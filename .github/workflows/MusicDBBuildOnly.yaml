@@ -83,6 +83,10 @@ jobs:
             echo "No dacpac file found"
             exit 1
           }
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Create Firewall rule
         id: firewall
