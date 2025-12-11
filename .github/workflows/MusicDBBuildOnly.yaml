@@ -138,10 +138,10 @@ jobs:
             /p:BlockOnPossibleDataLoss=false `
             /p:CreateNewDatabase=false `
             /p:DropObjectsNotInSource=true `
-            /p:DoNotDropObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;" `
+            /p:DoNotDropObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;Users;" `
             /p:DropPermissionsNotInSource=false `
             /p:DropRoleMembersNotInSource=false `
-            /p:ExcludeObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;" `
+            /p:ExcludeObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;Users;" `
             /p:IgnorePermissions=true `
             /p:IgnoreRoleMembership=true `
             /p:ScriptDatabaseOptions=false `
