@@ -1,9 +1,6 @@
-name: SQL Database CI/CD
+name: MusicDB Build and Deploy
 
 on:
-  workflow_dispatch:
-    branches:
-      - 'Carlos/**'
   push:
     branches:
       - main
@@ -16,6 +13,7 @@ on:
       - main
     paths:
       - 'MusicDB/**'
+    # paths-ignore:
       - '.github/workflows/**'
 
 jobs:
@@ -107,8 +105,8 @@ jobs:
           # Save output
           echo "rule-name=$ruleName" >> $env:GITHUB_OUTPUT
 
-      - name: Generate Deploy Script
-        id: generate-script
+      - name: Generate Deploy Report
+        id: generate-report
         env:
           SQL_PACKAGE_PATH: "C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin\\SqlPackage.exe"
         run: |
@@ -127,24 +125,38 @@ jobs:
               Write-Error "No file found"
             }
           }
+
+          # Logging var
+          $generateDateTime = (Get-Date -Format "yyyy-MM-dd HH:mm:ss")
+          $outputFileName = "MusicDB_DeployReport_$generateDateTime.xml"
           
           # Generate SQL script
-          & "$env:SQL_PACKAGE_PATH" /Action:Script `
+          & "$env:SQL_PACKAGE_PATH" /Action:DeployReport `
             /SourceFile:"${{ steps.find-dacpac.outputs.dacpac-path }}" `
             /TargetConnectionString:"${{ secrets.AZURE_SQL_CONNECTION_STRING }}" `
-            /OutputPath:"deploy.sql" `
+            /OutputPath:"$outputFileName" `
+            /p:BlockOnPossibleDataLoss=false `
+            /p:CreateNewDatabase=false `
+            /p:DoNotDropObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;"
+            /p:DropPermissionsNotInSource=false
+            /p:DropRoleMembersNotInSource=false
+            /p:ExcludeDataTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;"
+            /p:IgnorePermissions=true
+            /p:IgnoreRoleMemberships=true
             /p:ScriptDatabaseOptions=false `
             /p:IncludeCompositeObjects=true
           
           # Verify script was created
-          if (Test-Path "deploy.sql") {
-            $lineCount = (Get-Content deploy.sql | Measure-Object -Line).Lines
+          if (Test-Path $outputFileName) {
+            $lineCount = (Get-Content $outputFileName | Measure-Object -Line).Lines
             echo "Generated script with $lineCount lines"
             echo "success=true" >> $env:GITHUB_OUTPUT
           } else {
             echo "Script generation failed"
             exit 1
           }
+
+          echo "deployment-report=$outputFileName" >> $env:GITHUB_OUTPUT
 
       - name: Cleanup Firewall rule
         if: always()
@@ -159,8 +171,8 @@ jobs:
       - name: Upload Script for Review
         uses: actions/upload-artifact@v4
         with:
-          name: deployment-script
-          path: ./deploy.sql
+          name: deployment-report
+          path: "${{ stesp.generate-report.outputs.deployment-report }}"
           retention-days: 7
 
       - name: Upload Dacpac Artifact
