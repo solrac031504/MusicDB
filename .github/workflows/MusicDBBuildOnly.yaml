@@ -172,7 +172,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: deployment-report
-          path: "${{ stesp.generate-report.outputs.deployment-report }}"
+          path: "${{ steps.generate-report.outputs.deployment-report }}"
           retention-days: 7
 
       - name: Upload Dacpac Artifact
