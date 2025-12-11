@@ -185,7 +185,7 @@ jobs:
 
   deploy:
     needs: build-and-validate
-    if: needs.build-and-validate.outputs.script-generated == 'true'
+    # if: needs.build-and-validate.outputs.script-generated == 'true'
     runs-on: windows-latest
     environment: production
     steps:
