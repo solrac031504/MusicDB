@@ -137,14 +137,15 @@ jobs:
             /OutputPath:"$outputFileName" `
             /p:BlockOnPossibleDataLoss=false `
             /p:CreateNewDatabase=false `
-            /p:DoNotDropObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;"
-            /p:DropPermissionsNotInSource=false
-            /p:DropRoleMembersNotInSource=false
-            /p:ExcludeDataTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;"
-            /p:IgnorePermissions=true
-            /p:IgnoreRoleMemberships=true
+            /p:DropObjectsNotInSource=true `
+            /p:DoNotDropObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;" `
+            /p:DropPermissionsNotInSource=false `
+            /p:DropRoleMembersNotInSource=false `
+            /p:ExcludeObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;" `
+            /p:IgnorePermissions=true `
+            /p:IgnoreRoleMemberships=true `
             /p:ScriptDatabaseOptions=false `
-            /p:IncludeCompositeObjects=true
+            /p:IncludeCompositeObjects=true `
           
           # Verify script was created
           if (Test-Path $outputFileName) {
