@@ -145,7 +145,7 @@ jobs:
             /p:IgnorePermissions=true `
             /p:IgnoreRoleMembership=true `
             /p:ScriptDatabaseOptions=false `
-            /p:IncludeCompositeObjects=true `
+            /p:IncludeCompositeObjects=true
           
           # Verify script was created
           if (Test-Path $outputFileName) {
@@ -183,76 +183,91 @@ jobs:
           path: ${{ steps.find-dacpac.outputs.dacpac-path }}
           retention-days: 7
 
-  # deploy:
-  #   needs: build-and-validate
-  #   if: needs.build-and-validate.outputs.script-generated == 'true'
-  #   runs-on: windows-latest
-  #   steps:
-  #     - name: Download Artifacts
-  #       uses: actions/download-artifact@v4
-  #       with:
-  #         name: database-dacpac
+  deploy:
+    needs: build-and-validate
+    if: needs.build-and-validate.outputs.script-generated == 'true'
+    runs-on: windows-latest
+    environment: production
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: database-dacpac
+
+      - name: Download Deployment Report
+        uses: actions/download-artifact@v4
+        with:
+          name: deployment-report
           
-  #     - name: Find Downloaded Dacpac
-  #       id: find-downloaded-dacpac
-  #       run: |
-  #         $dacpac = Get-ChildItem -Path . -Filter "*.dacpac" -Recurse | Select-Object -First 1 -ExpandProperty FullName
-  #         if ($dacpac) {
-  #           echo "dacpac-path=$dacpac" >> $env:GITHUB_OUTPUT
-  #           echo "Found dacpac for deployment: $dacpac"
-  #         } else {
-  #           echo "No dacpac file found after download"
-  #           exit 1
-  #         }
+      - name: Find Downloaded Dacpac
+        id: find-downloaded-dacpac
+        run: |
+          $dacpac = Get-ChildItem -Path . -Filter "*.dacpac" -Recurse | Select-Object -First 1 -ExpandProperty FullName
+          if ($dacpac) {
+            echo "dacpac-path=$dacpac" >> $env:GITHUB_OUTPUT
+            echo "Found dacpac for deployment: $dacpac"
+          } else {
+            echo "No dacpac file found after download"
+            exit 1
+          }
 
-  #     - name: Manual Approval Step
-  #       if: github.event_name != 'workflow_dispatch'
-  #       run: |
-  #         Write-Host "=============================================="
-  #         Write-Host "REQUIRED: Manual Deployment Approval"
-  #         Write-Host "=============================================="
-  #         Write-Host ""
-  #         Write-Host "Review the deployment script in the 'build-and-validate' job artifacts."
-  #         Write-Host ""
-  #         Write-Host "To proceed with deployment:"
-  #         Write-Host "1. Go to the GitHub Actions tab"
-  #         Write-Host "2. Select this workflow run"
-  #         Write-Host "3. Look under 'deploy' job"
-  #         Write-Host "4. Click 'Approve and deploy' (if environment has approvals)"
-  #         Write-Host "OR"
-  #         Write-Host "Re-run workflow manually with workflow_dispatch"
-  #         Write-Host ""
-  #         Write-Host "Deployment will proceed automatically if this workflow"
-  #         Write-Host "was triggered manually via 'Run workflow' button."
-  #         Write-Host "=============================================="
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-  #     - name: Interactive Confirmation
-  #       if: github.event_name == 'workflow_dispatch'
-  #       run: |
-  #         $response = Read-Host "Type 'deploy' to proceed with database deployment"
-  #         if ($response -ne 'deploy') {
-  #           Write-Error "Deployment cancelled by user"
-  #           exit 1
-  #         }
-  #         Write-Host "Proceeding with deployment..."
+      - name: Create Firewall rule
+        id: firewall
+        shell: pwsh
+        run: |
+          # Add runner IP to the firewall rule
+          $ip = (Invoke-RestMethod -Uri "https://api.ipify.org").Trim()
+          $ruleName = "gha-run-${{ github.run_id }}"
 
-  #     - name: Azure Login
-  #       uses: azure/login@v2
-  #       with:
-  #         creds: ${{ secrets.AZURE_CREDENTIALS }}
+          # Add firewall rule
+          az sql server firewall-rule create `
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} `
+            --server ${{ secrets.AZURE_SQL_SERVER_NAME }} `
+            --name "$ruleName" `
+            --start-ip-address "$ip" `
+            --end-ip-address "$ip"
 
-  #     - name: Deploy to Azure SQL
-  #       uses: azure/sql-action@v2.3
-  #       with:
-  #         connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
-  #         path: ${{ steps.find-downloaded-dacpac.outputs.dacpac-path }}
-  #         action: 'publish'
-  #         arguments: '--publish-options:'
-  #         # Additional arguments can be added here
-  #         # /p:BlockOnPossibleDataLoss=false
-  #         # /p:DropObjectsNotInSource=true
+          # Save output
+          echo "rule-name=$ruleName" >> $env:GITHUB_OUTPUT
 
-  #     - name: Azure Logout
-  #       run: |
-  #         az logout
-  #       if: always()
+      - name: Deploy to Azure SQL
+        env:
+            SQL_PACKAGE_PATH: "C:\\Program Files\\Microsoft SQL Server\\170\\DAC\\bin\\sqlpackage.exe"
+        uses: azure/sql-action@v2.3
+        with:
+          connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+          path: ${{ steps.find-downloaded-dacpac.outputs.dacpac-path }}
+          action: 'publish'
+          arguments: |
+            /p:BlockOnPossibleDataLoss=false `
+            /p:CreateNewDatabase=false `
+            /p:DropObjectsNotInSource=true `
+            /p:DoNotDropObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;Users;" `
+            /p:DropPermissionsNotInSource=false `
+            /p:DropRoleMembersNotInSource=false `
+            /p:ExcludeObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;Users;" `
+            /p:IgnorePermissions=true `
+            /p:IgnoreRoleMembership=true `
+            /p:ScriptDatabaseOptions=false `
+            /p:IncludeCompositeObjects=true
+          sqlpackage-path: $env:SQL_PACKAGE_PATH
+
+      - name: Cleanup Firewall rule
+        if: always()
+        shell: pwsh
+        run: |
+          # Remove created firewall rule
+          az sql server firewall-rule delete `
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} `
+            --server ${{ secrets.AZURE_SQL_SERVER_NAME }} `
+            --name "${{ steps.firewall.outputs.rule-name }}"
+
+      - name: Azure Logout
+        run: |
+          az logout
+        if: always()
