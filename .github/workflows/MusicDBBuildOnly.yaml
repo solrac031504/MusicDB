@@ -143,7 +143,7 @@ jobs:
             /p:DropRoleMembersNotInSource=false `
             /p:ExcludeObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;" `
             /p:IgnorePermissions=true `
-            /p:IgnoreRoleMemberships=true `
+            /p:IgnoreRoleMembership=true `
             /p:ScriptDatabaseOptions=false `
             /p:IncludeCompositeObjects=true `
           
