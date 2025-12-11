@@ -108,7 +108,7 @@ jobs:
       - name: Generate Deploy Report
         id: generate-report
         env:
-          SQL_PACKAGE_PATH: "C:\\Program Files\\Microsoft SQL Server\\160\\DAC\\bin\\SqlPackage.exe"
+          SQL_PACKAGE_PATH: "C:\\Program Files\\Microsoft SQL Server\\170\\DAC\\bin\\sqlpackage.exe"
         run: |
           # Find sqlpackage if not in default location
           if (-not (Test-Path $env:SQL_PACKAGE_PATH)) 
@@ -127,7 +127,7 @@ jobs:
           }
 
           # Logging var
-          $generateDateTime = (Get-Date -Format "yyyy-MM-dd HH:mm:ss")
+          $generateDateTime = (Get-Date -Format "yyyy-MM-dd_HHmmss")
           $outputFileName = "MusicDB_DeployReport_$generateDateTime.xml"
           
           # Generate SQL script
