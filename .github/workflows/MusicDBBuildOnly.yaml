@@ -4,16 +4,9 @@ on:
   push:
     branches:
       - main
-      - 'Carlos/VisualStudioExperiment'
     paths:
       - 'MusicDB/**'
-      - '.github/workflows/**'
-  pull_request:
-    branches:
-      - main
-    paths:
-      - 'MusicDB/**'
-    # paths-ignore:
+    paths-ignore:
       - '.github/workflows/**'
 
 jobs:
