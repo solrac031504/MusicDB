@@ -1,21 +1,13 @@
 ﻿CREATE TABLE [dbo].[GenreHierarchy]
 (
-    counter                 INT                 IDENTITY(1, 1)
-    , [GenreId]             INT                 NOT NULL
-    , [ParentGenreId]       INT                     NULL
+    [GenreId]               INT                 NOT NULL
+    , [ParentGenreId]       INT                 NOT NULL
     , [CreatedUtc]          DATETIME            NOT NULL        CONSTRAINT [DF_GenreHierarchy_CreatedUtc]   DEFAULT (GETUTCDATE())
     , [CreatedBy]           NVARCHAR(255)       NOT NULL        CONSTRAINT [DF_GenreHierarchy_CreatedBy]    DEFAULT (SUSER_SNAME())
     , [ModifiedUtc]         DATETIME                NULL
     , [ModifiedBy]          NVARCHAR(255)           NULL
-    , CONSTRAINT [PK_GenreHierarchy] PRIMARY KEY NONCLUSTERED (counter ASC)
+    , CONSTRAINT [PK_GenreHierarchy] PRIMARY KEY CLUSTERED (GenreId ASC, ParentGenreId ASC)
 );
-GO
-
--- ******************************
--- INDEXES
--- ******************************
-CREATE UNIQUE CLUSTERED INDEX [CIX_GenreHierarchy_GenreId_ParentGenreId]
-ON [dbo].[GenreHierarchy] (GenreId ASC, ParentGenreId ASC);
 GO
 
 -- ******************************
@@ -66,7 +58,7 @@ GO
 
 EXEC sys.sp_addextendedproperty
     @name = N'Version'
-    , @value = N'1.0'
+    , @value = N'1.1'
     , @level0type = N'SCHEMA'
     , @level0name = N'dbo'
     , @level1type = N'TABLE'
@@ -93,7 +85,7 @@ GO
 
 EXEC sys.sp_addextendedproperty
     @name = N'ModifiedDate'
-    , @value = N''
+    , @value = N'12/11/2025'
     , @level0type = N'SCHEMA'
     , @level0name = N'dbo'
     , @level1type = N'TABLE'
@@ -102,7 +94,7 @@ GO
 
 EXEC sys.sp_addextendedproperty
     @name = N'ModifiedBy'
-    , @value = N''
+    , @value = N'Carlos Gonzalez'
     , @level0type = N'SCHEMA'
     , @level0name = N'dbo'
     , @level1type = N'TABLE'
@@ -114,18 +106,7 @@ GO
 -- ******************************
 EXEC sys.sp_addextendedproperty
     @name = N'MS_Description'
-    , @value = N'PK, IDENTITY'
-    , @level0type = N'SCHEMA'
-    , @level0name = N'dbo'
-    , @level1type = N'TABLE'
-    , @level1name = N'GenreHierarchy'
-    , @level2type = N'COLUMN'
-    , @level2name = N'counter';
-GO
-
-EXEC sys.sp_addextendedproperty
-    @name = N'MS_Description'
-    , @value = N'The current genre in the hierarchy. References dbo.Genre'
+    , @value = N'PK. The current genre in the hierarchy. References dbo.Genre'
     , @level0type = N'SCHEMA'
     , @level0name = N'dbo'
     , @level1type = N'TABLE'
@@ -136,7 +117,7 @@ GO
 
 EXEC sys.sp_addextendedproperty
     @name = N'MS_Description'
-    , @value = N'The parent of the current genre. NULL if the genre is a root genre. References dbo.Genre'
+    , @value = N'PK. The parent of the current genre. -1 if the genre is a root genre. References dbo.Genre'
     , @level0type = N'SCHEMA'
     , @level0name = N'dbo'
     , @level1type = N'TABLE'
