@@ -10,6 +10,7 @@
     , ServiceId             INT                 NOT NULL
     , Duration              INT                 NOT NULL
     , Rating                DECIMAL(4, 2)           NULL
+    , IsAdded               INT                 NOT NULL        CONSTRAINT [DF_Song_IsAdded]        DEFAULT (( 0 ))
     , IsLocalFile           INT                 NOT NULL        CONSTRAINT [DF_Song_IsLocalFile]    DEFAULT (( 0 ))
     , CreatedUtc            DATETIME            NOT NULL        CONSTRAINT [DF_Song_CreatedUtc]     DEFAULT (GETUTCDATE())
     , CreatedBy             NVARCHAR(255)       NOT NULL        CONSTRAINT [DF_Song_CreatedBy]      DEFAULT (SUSER_SNAME())
@@ -256,6 +257,17 @@ EXEC sys.sp_addextendedproperty
     , @level1name = N'Song'
     , @level2type = N'COLUMN'
     , @level2name = N'Rating'
+GO
+
+EXEC sys.sp_addextendedproperty
+    @name = N'MS_Description'
+    , @value = N'Flag if the song is or is not added in my library'
+    , @level0type = N'SCHEMA'
+    , @level0name = N'dbo'
+    , @level1type = N'TABLE'
+    , @level1name = N'Song'
+    , @level2type = N'COLUMN'
+    , @level2name = N'IsAdded'
 GO
 
 EXEC sys.sp_addextendedproperty
