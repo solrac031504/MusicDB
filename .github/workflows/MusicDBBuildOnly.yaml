@@ -243,16 +243,16 @@ jobs:
           path: ${{ steps.find-downloaded-dacpac.outputs.dacpac-path }}
           action: 'publish'
           arguments: |
-            /p:BlockOnPossibleDataLoss=false `
-            /p:CreateNewDatabase=false `
-            /p:DropObjectsNotInSource=true `
-            /p:DoNotDropObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;Users;" `
-            /p:DropPermissionsNotInSource=false `
-            /p:DropRoleMembersNotInSource=false `
-            /p:ExcludeObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;Users;" `
-            /p:IgnorePermissions=true `
-            /p:IgnoreRoleMembership=true `
-            /p:ScriptDatabaseOptions=false `
+            /p:BlockOnPossibleDataLoss=false
+            /p:CreateNewDatabase=false
+            /p:DropObjectsNotInSource=true
+            /p:DoNotDropObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;Users;"
+            /p:DropPermissionsNotInSource=false
+            /p:DropRoleMembersNotInSource=false
+            /p:ExcludeObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;Users;"
+            /p:IgnorePermissions=true
+            /p:IgnoreRoleMembership=true
+            /p:ScriptDatabaseOptions=false
             /p:IncludeCompositeObjects=true
           # sqlpackage-path: $env:SQL_PACKAGE_PATH
 
