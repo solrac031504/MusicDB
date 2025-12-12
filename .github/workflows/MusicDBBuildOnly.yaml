@@ -235,8 +235,6 @@ jobs:
           echo "rule-name=$ruleName" >> $env:GITHUB_OUTPUT
 
       - name: Deploy to Azure SQL
-        env:
-            SQL_PACKAGE_PATH: "C:\\Program Files\\Microsoft SQL Server\\170\\DAC\\bin\\sqlpackage.exe"
         uses: azure/sql-action@v2.3
         with:
           connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
@@ -254,7 +252,6 @@ jobs:
             /p:IgnoreRoleMembership=true
             /p:ScriptDatabaseOptions=false
             /p:IncludeCompositeObjects=true
-          # sqlpackage-path: $env:SQL_PACKAGE_PATH
 
       - name: Cleanup Firewall rule
         if: always()
