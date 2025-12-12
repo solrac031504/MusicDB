@@ -185,7 +185,6 @@ jobs:
 
   deploy:
     needs: build-and-validate
-    # if: needs.build-and-validate.outputs.script-generated == 'true'
     runs-on: windows-latest
     environment: production
     steps:
@@ -255,7 +254,7 @@ jobs:
             /p:IgnoreRoleMembership=true `
             /p:ScriptDatabaseOptions=false `
             /p:IncludeCompositeObjects=true
-          sqlpackage-path: $env:SQL_PACKAGE_PATH
+          # sqlpackage-path: $env:SQL_PACKAGE_PATH
 
       - name: Cleanup Firewall rule
         if: always()
