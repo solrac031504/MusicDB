@@ -160,6 +160,86 @@ jobs:
             --server ${{ secrets.AZURE_SQL_SERVER_NAME }} `
             --name "${{ steps.firewall.outputs.rule-name }}"
 
+      - name: Print Report
+        run: |
+          # Get the contents
+          $reportPath = "${{ steps.generate-report.outputs.deployment-report }}"
+
+          # Test the path
+          if (!(Test-Path $reportPath))
+          {
+            Write-Error "No report found at $reportPath"
+            exit 1
+          }
+
+          # Read in content
+          [xml]$xml = Get-Content $reportPath
+
+          # Format the alerts
+          $alerts = $xml.DeploymentReport.Alerts.Alert | ForEach-Object {
+            $alertName = $_.Name
+            $_.Issue | ForEach-Object {
+              [PSCustomObject]@{
+                'Alert Type' = $alertName
+                'Issue' = $_.Value
+                'Id' = $_.Id
+              }
+            }
+          }
+
+          # Format the operations
+          $operations = $xml.DeploymentReport.Operations.Operation | ForEach-Object {
+            $operationName = $_.Name
+            $_.Item | ForEach-Object {
+              [PSCustomObject]@{
+                'Operation Type' = $operationName
+                'Item' = $_.Value
+                'Type' = $_.Type
+              }
+            }
+          }
+
+          # Create markdown content
+          $markdownContent = "# Database Deployment Report`n"
+          $markdownContent += "## Alerts`n`n"
+          $markdownContent += "| Alert Type | Issue | Id |`n"
+          $markdownContent += "|------------|-------|----|`n"
+
+          if ($alerts -and $alerts.Count -gt 0)
+          {
+            foreach($alert in $alerts)
+            {
+              $alertType = ($alert.'Alert Type' -replace '\|', '\|') -replace '\r?\n', ' '
+              $issue = ($alert.Issue -replace '\|', '\|') -replace '\r?\n', ' '
+              $id = ($alert.Id -replace '\|', '\|') -replace '\r?\n', ' '
+              $markdownContent += "| $alertType | $issue | $id |`n"
+            }
+          }
+
+          $markdownContent += "`n## Operations`n`n"
+          $markdownContent += "| Operation Type | Item | Type |`n"
+          $markdownContent += "|----------------|------|------|`n"
+
+          if ($operations -and $operations.Count -gt 0)
+          {
+            foreach($operation in $operations)
+            {
+              $operationType = ($operation.'Operation Type' -replace '\|', '\|') -replace '\r?\n', ' '
+              $item = ($operation.Item -replace '\|', '\|') -replace '\r?\n', ' '
+              $type = ($operation.Type -replace '\|', '\|') -replace '\r?\n', ' '
+              $markdownContent += "| $operationType | $item | $type |`n"
+            }
+          }
+
+          echo $markdownContent >> $GITHUB_STEP_SUMMARY
+
+          # Print in the pipeline as well
+          Write-Host "Alerts"
+          $alerts | Format-Table -AutoSize
+
+          Write-Host "Operations"
+          $operations | Format-Table -AutoSize          
+
       - name: Upload Script for Review
         uses: actions/upload-artifact@v4
         with:
