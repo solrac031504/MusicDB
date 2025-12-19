@@ -42,6 +42,8 @@ IF EXISTS (SELECT 1 FROM [user].[Login] AS u WHERE u.UserName = @pUserName AND u
 			, ul.ModifiedUtc = GETUTCDATE()
 		FROM
 			[user].[Login] AS ul
+		WHERE
+			ul.UserName = @pUserName
 		;
 
 		COMMIT TRANSACTION
