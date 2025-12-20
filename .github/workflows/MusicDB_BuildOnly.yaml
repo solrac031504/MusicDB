@@ -2,10 +2,14 @@ name: MusicDB Build Only
 
 on:
   pull_request:
-    branches-ignore:
+    branches:
       - main
     paths-ignore:
       - '.github/workflows/**'
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
   build-only:
