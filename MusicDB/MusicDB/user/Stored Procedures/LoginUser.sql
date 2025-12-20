@@ -106,7 +106,7 @@ END TRY
 BEGIN CATCH
 
 	-- Capture error message
-	SET @poErrorMessage = ERROR_MESSAGE;
+	SET @poErrorMessage = ERROR_MESSAGE();
 	SET @poAuthenticated = 0;
 	SET @poAuthExpiration = NULL;
 	SET @poIsAdmin = 0;
