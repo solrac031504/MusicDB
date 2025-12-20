@@ -129,14 +129,8 @@ jobs:
             /p:BlockOnPossibleDataLoss=false `
             /p:CreateNewDatabase=false `
             /p:DropObjectsNotInSource=true `
-            /p:DoNotDropObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;Users;" `
-            /p:DropPermissionsNotInSource=false `
-            /p:DropRoleMembersNotInSource=false `
             /p:ExcludeObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;Users;" `
-            /p:IgnorePermissions=true `
-            /p:IgnoreRoleMembership=true `
-            /p:ScriptDatabaseOptions=false `
-            /p:IncludeCompositeObjects=true
+            /p:ScriptDatabaseOptions=false
           
           # Verify script was created
           if (Test-Path $outputFileName) {
@@ -311,7 +305,7 @@ jobs:
           connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
           path: ${{ steps.find-downloaded-dacpac.outputs.dacpac-path }}
           action: 'publish'
-          arguments: '/p:BlockOnPossibleDataLoss=false /p:CreateNewDatabase=false /p:DropObjectsNotInSource=true /p:DoNotDropObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;Users;" /p:DropPermissionsNotInSource=false /p:DropRoleMembersNotInSource=false /p:ExcludeObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;Users;" /p:IgnorePermissions=true /p:IgnoreRoleMembership=true /p:ScriptDatabaseOptions=false /p:IncludeCompositeObjects=true'
+          arguments: '/p:BlockOnPossibleDataLoss=false /p:CreateNewDatabase=false /p:DropObjectsNotInSource=true /p:ExcludeObjectTypes="ApplicationRoles;DatabaseRoles;Permissions;RoleMembership;Credentials;DatabaseScopedCredentials;LinkedServerLogins;LinkedServers;Logins;Users;" /p:ScriptDatabaseOptions=false /p:IncludeCompositeObjects=true'
 
       - name: Cleanup Firewall rule
         if: always()
