@@ -7,6 +7,7 @@
 	, LastLoginDate			DATETIME					NULL
 	, LastLoginOrigin		NVARCHAR(50)				NULL
     , IsActive              INT                     NOT NULL CONSTRAINT [DF_Login_IsActive] DEFAULT (( 0 ))
+    , IsAdmin               INT                     NOT NULL CONSTRAINT [DF_Login_IsAdmin] DEFAULT (( 0 ))
 	, CreatedBy				NVARCHAR(255)			NOT NULL CONSTRAINT [DF_Login_CreatedBy] DEFAULT (SUSER_SNAME())
 	, CreatedUtc			DATETIME				NOT NULL CONSTRAINT [DF_Login_CreatedUtc] DEFAULT (GETUTCDATE())
 	, ModifiedBy			NVARCHAR(255)				NULL
@@ -20,7 +21,7 @@ GO
 -- ******************************
 CREATE UNIQUE NONCLUSTERED INDEX [UX_Login_UserName]
 ON [user].[Login] (UserName)
-INCLUDE ([Password]);
+INCLUDE ([Password], IsActive);
 GO
 
 -- ******************************
@@ -55,7 +56,7 @@ GO
 
 EXEC sys.sp_addextendedproperty
     @name = N'Version'
-    , @value = N'1.0'
+    , @value = N'1.0.1'
     , @level0type = N'SCHEMA'
     , @level0name = N'user'
     , @level1type = N'TABLE'
@@ -82,7 +83,7 @@ GO
 
 EXEC sys.sp_addextendedproperty
     @name = N'ModifiedDate'
-    , @value = N''
+    , @value = N'12/20/2025'
     , @level0type = N'SCHEMA'
     , @level0name = N'user'
     , @level1type = N'TABLE'
@@ -91,7 +92,7 @@ GO
 
 EXEC sys.sp_addextendedproperty
     @name = N'ModifiedBy'
-    , @value = N''
+    , @value = N'Carlos'
     , @level0type = N'SCHEMA'
     , @level0name = N'user'
     , @level1type = N'TABLE'
@@ -165,6 +166,28 @@ EXEC sys.sp_addextendedproperty
     , @level1name = N'Login'
     , @level2type = N'COLUMN'
     , @level2name = N'LastLoginOrigin';
+GO
+
+EXEC sys.sp_addextendedproperty
+    @name = N'MS_Description'
+    , @value = N'Flags if the login is active or disabled'
+    , @level0type = N'SCHEMA'
+    , @level0name = N'user'
+    , @level1type = N'TABLE'
+    , @level1name = N'Login'
+    , @level2type = N'COLUMN'
+    , @level2name = N'IsActive';
+GO
+
+EXEC sys.sp_addextendedproperty
+    @name = N'MS_Description'
+    , @value = N'Flags if the user is an admin user on the website'
+    , @level0type = N'SCHEMA'
+    , @level0name = N'user'
+    , @level1type = N'TABLE'
+    , @level1name = N'Login'
+    , @level2type = N'COLUMN'
+    , @level2name = N'IsAdmin';
 GO
 
 EXEC sys.sp_addextendedproperty
