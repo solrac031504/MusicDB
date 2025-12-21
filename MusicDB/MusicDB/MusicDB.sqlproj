@@ -67,6 +67,9 @@
     <Folder Include="user" />
     <Folder Include="user\Tables" />
     <Folder Include="user\Stored Procedures" />
+    <Folder Include="stage" />
+    <Folder Include="stage\Tables" />
+    <Folder Include="stage\Stored Procedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Artist.sql" />
@@ -88,9 +91,9 @@
     <Build Include="user\user.sql" />
     <Build Include="user\Tables\Login.sql" />
     <Build Include="user\Stored Procedures\LoginUser.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="MusicDB.publish.xml" />
+    <Build Include="stage\stage.sql" />
+    <Build Include="stage\Tables\Genre.sql" />
+    <Build Include="stage\Stored Procedures\GenreMerge.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="SqlServerInstance">
@@ -105,5 +108,12 @@
       <DefaultValue>saCarlos</DefaultValue>
       <Value>$(SqlCmdVar__2)</Value>
     </SqlCmdVariable>
+  </ItemGroup>
+  <ItemGroup>
+    <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac">
+      <HintPath>$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\AzureV12\SqlSchemas\master.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>True</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
   </ItemGroup>
 </Project>
