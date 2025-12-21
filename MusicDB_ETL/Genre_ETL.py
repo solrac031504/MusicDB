@@ -133,8 +133,8 @@ class GenreETLPipeline:
         """Truncate staging tables"""
         try:
             with self.engine.connect() as conn:
-                conn.execute("TRUNCATE TABLE stage.Genre")
-                conn.execute("TRUNCATE TABLE stage.GenreHierarchy")
+                conn.execute(text("TRUNCATE TABLE stage.Genre"))
+                conn.execute(text("TRUNCATE TABLE stage.GenreHierarchy"))
                 conn.commit()
 
             logger.info("Successfully truncated Genre and GenreHierarchy stage tables")
@@ -155,10 +155,10 @@ class GenreETLPipeline:
             self.genre_df.to_sql(
                 name="Genre",
                 con=self.engine,
-                schema="stage"
-                if_exists='append'
-                index=False
-                dtype=self._get_column_dtypes()
+                schema="stage",
+                if_exists='append',
+                index=False,
+                dtype=self._get_column_dtypes(self.genre_df)
             )
 
             logger.info(f"Successfully loaded {len(self.genre_df)} records to stage.Genre")
@@ -169,7 +169,7 @@ class GenreETLPipeline:
                 schema="stage",
                 if_exists='append',
                 index=False,
-                dtype=self._get_column_dtypes()
+                dtype=self._get_column_dtypes(self.hierarchy_df)
             )
 
             logger.info(f"Successfully loaded {len(self.hierarchy_df)} records to stage.GenreHierarchy")
@@ -198,12 +198,12 @@ class GenreETLPipeline:
                 dtype_mapping[column] = sqlalchemy.types.Boolean()
             else:
                 # Default to string
-                max_len = self.df[column].astype(str).str.len().max()
+                max_len = df[column].astype(str).str.len().max()
                 dtype_mapping[column] = sqlalchemy.types.String(
                     length=int(max_len) if not pd.isna(max_len) else 255
                 )
         
-            return dtype_mapping
+        return dtype_mapping
 
     def merge_to_final_table(self):
         """Merge data from stage table to final table"""
@@ -264,6 +264,12 @@ class GenreETLPipeline:
 
                 conn.commit()
 
+            logger.info("Merged stage tables into production tables")
+            return True
+        except Exception as e:
+            logger.error("Error merging staging tables into production tables")
+            return False
+
     def run_etl(self, json_file_path):
         """
         Run complete ETL pipeline
@@ -298,13 +304,13 @@ class GenreETLPipeline:
 
 if __name__ == "__main__":
     # Get path to .env
-    env_path = os.join(os.getcwd(), ".env")
+    env_path = os.path.join(os.getcwd(), ".env")
     load_dotenv(env_path)
 
     DATABASE_CONNECTION_STRING = os.getenv("DATABASE_CONNECTION_STRING")
 
     # Get path to JSON file
-    json_path = os.join(os.getcwd(), "MusicDB_ETL", "Data", "Genres.json")
+    json_path = os.path.join(os.getcwd(), "MusicDB_ETL", "Data", "Genres.json")
 
     # Initialize pipeline
     etl = GenreETLPipeline(
