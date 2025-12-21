@@ -27,19 +27,16 @@ BEGIN TRANSACTION
 -- Insert rows that don't exist
 -- ======================================================
 */
-SET IDENTITY_INSERT dbo.Genre ON
-INSERT INTO dbo.Genre
+INSERT INTO dbo.GenreHierarchy
 (
 	GenreId
-	,GenreName
-	,[Description]
+	,ParentGenreId
 )
 SELECT
 	src.GenreId
-	,src.GenreName
-	,N'' AS [Description] -- import as empty and set later
+	,src.ParentGenreId
 FROM
-	stage.Genre AS src
+	stage.GenreHierarchy AS src
 WHERE
 	1=1
 	AND NOT EXISTS
@@ -47,9 +44,11 @@ WHERE
 		SELECT
 			1
 		FROM
-			dbo.Genre AS tgt
+			dbo.GenreHierarchy AS tgt
 		WHERE
-			tgt.GenreId = src.GenreId
+			1=1
+			AND tgt.GenreId = src.GenreId
+			AND tgt.ParentGenreId = src.ParentGenreId
 	)
 ;
 
