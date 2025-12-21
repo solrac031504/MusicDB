@@ -86,25 +86,25 @@ class GenreETLPipeline:
                     # If key has no child, is root
                     else:
                         # Key is a root node
-                        add_relationship(key, -1)
+                        add_relationship(key, None)
                     # If the key value is a dict, recurse
                     if isinstance(val, dict):
                         traverse_tree(val, child=key)
                     # If the key val is NULL, is root
                     elif val is None:
-                        add_relationship(key, -1)
+                        add_relationship(key, None)
             
             # Load JSON data
             with open(json_file_path, 'r') as file:
                 genres = json.load(file)
 
             # Iterate through JSON and create tuples for genre and hierarchy info
-            for outer_key, outer_val in genres.items():
+            for outer_key, outer_val in genres.items():                
                 traverse_tree(outer_val, child=outer_key)
                 get_or_create_genre_id(outer_key)
                 # If no parents, add -1 parent entry
                 if outer_val is None:
-                    add_relationship(outer_key, -1)
+                    add_relationship(outer_key, None)
 
             # Separate the tuples into two arrays
             genre_ids = [genre_id for genre_id, _ in genre_rows]
@@ -122,6 +122,9 @@ class GenreETLPipeline:
                 'GenreId': relationship_genre_ids,
                 'ParentGenreId': relationship_parent_ids
             })
+
+            # Convert Nones in hierarchy to -1
+            self.hierarchy_df.fillna(value=-1, inplace=True)
 
             logger.info("Loaded JSON data into data frames")
             return True
@@ -296,8 +299,8 @@ class GenreETLPipeline:
             return False
 
         # Step 5: Merge into final tables
-        # if not self.merge_to_final_table():
-        #     return False
+        if not self.merge_to_final_table():
+            return False
 
         logger.info("Genre ETL Pipeline completed successfully!")
         return True
