@@ -70,6 +70,7 @@
     <Folder Include="stage" />
     <Folder Include="stage\Tables" />
     <Folder Include="stage\Stored Procedures" />
+    <Folder Include="dbo\Views" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\Artist.sql" />
@@ -96,6 +97,7 @@
     <Build Include="stage\Stored Procedures\GenreMerge.sql" />
     <Build Include="stage\Tables\GenreHierarchy.sql" />
     <Build Include="stage\Stored Procedures\GenreHierarchyMerge.sql" />
+    <Build Include="dbo\Views\vwGenreHierarchy.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="SqlServerInstance">
