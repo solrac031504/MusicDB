@@ -2,13 +2,13 @@
 -- ======================================================
 -- Author:        Carlos Gonzalez
 -- Date Created:  2025-12-20
--- Description:   Merges Genre records from stage
+-- Description:   Merges GenreHierarchy records from stage
 ---------------------------------------------------------
 -- YYYY-MM-DD - Author - Change
 -- 
 -- ======================================================
 */
-CREATE PROCEDURE [stage].[GenreMerge]
+CREATE PROCEDURE [stage].[GenreHierarchyMerge]
 	@poInsertedRows INT OUTPUT
 	,@poUpdatedRows INT OUTPUT
 	,@poDeletedRows INT OUTPUT
@@ -21,25 +21,6 @@ SET NOCOUNT ON
 SET XACT_ABORT ON
 
 BEGIN TRANSACTION
-
-/*
--- ======================================================
--- Update rows if they exist
--- ======================================================
-*/
-UPDATE
-	tgt
-SET
-	tgt.GenreName			= src.GenreName
-	,tgt.ModifiedBy			= SUSER_SNAME()
-	,tgt.ModifiedUtc		 = GETUTCDATE()
-FROM
-	dbo.Genre AS tgt
-	JOIN stage.Genre AS src
-		ON tgt.GenreId = src.GenreId
-;
-
-SET @poUpdatedRows = @@ROWCOUNT;
 
 /*
 -- ======================================================
