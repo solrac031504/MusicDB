@@ -32,11 +32,14 @@ UPDATE
 SET
 	tgt.GenreName			= src.GenreName
 	,tgt.ModifiedBy			= SUSER_SNAME()
-	,tgt.ModifiedUtc		 = GETUTCDATE()
+	,tgt.ModifiedUtc		= GETUTCDATE()
 FROM
 	dbo.Genre AS tgt
 	JOIN stage.Genre AS src
 		ON tgt.GenreId = src.GenreId
+WHERE
+	1=1
+	AND tgt.GenreName <> src.GenreName
 ;
 
 SET @poUpdatedRows = @@ROWCOUNT;
