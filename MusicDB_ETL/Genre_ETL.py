@@ -212,58 +212,60 @@ class GenreETLPipeline:
         """Merge data from stage table to final table"""
 
         try:
-            genre_sql = text("""
+            genre_sql = """
+            DECLARE
+            @InsertedRows INT
+            ,@UpdatedRows INT
+            ,@DeletedRows INT;
             EXEC stage.GenreMerge
-                @poInsertedRows = :inserted_rows OUTPUT
-                ,@poUpdatedRows = :updated_rows OUTPUT
-                ,@poDeletedRows = :deleted_rows OUTPUT
-            """).bindparams(
-                bindparam("inserted_rows", type_=int, outparam=True),
-                bindparam("updated_rows", type_=int, outparam=True),
-                bindparam("deleted_rows", type_=int, outparam=True)
-            )
+                @poInsertedRows = @InsertedRows OUTPUT
+                ,@poUpdatedRows = @UpdatedRows OUTPUT
+                ,@poDeletedRows = @DeletedRows OUTPUT;
+            SELECT
+                @InsertedRows as inserted_rows
+                ,@UpdatedRows as updated_rows
+                ,@DeletedRows as deleted_rows;
+            """
 
-            hierarchy_sql = text("""
+            hierarchy_sql = """
+            DECLARE
+            @InsertedRows INT
+            ,@UpdatedRows INT
+            ,@DeletedRows INT;
             EXEC stage.GenreHierarchyMerge
-                @poInsertedRows = :inserted_rows OUTPUT
-                ,@poUpdatedRows = :updated_rows OUTPUT
-                ,@poDeletedRows = :deleted_rows OUTPUT
-            """).bindparams(
-                bindparam("inserted_rows", type_=int, outparam=True),
-                bindparam("updated_rows", type_=int, outparam=True),
-                bindparam("deleted_rows", type_=int, outparam=True)
-            )
+                @poInsertedRows = @InsertedRows OUTPUT
+                ,@poUpdatedRows = @UpdatedRows OUTPUT
+                ,@poDeletedRows = @DeletedRows OUTPUT;
+            SELECT
+                @InsertedRows as inserted_rows
+                ,@UpdatedRows as updated_rows
+                ,@DeletedRows as deleted_rows;
+            """
 
             with self.engine.connect() as conn:
-                # Prepare params
-                params = {
-                    'inserted_rows': None,
-                    'updated_rows': None,
-                    'deleted_rows': None
-                }
+                logger.info("Merging stage.Genre ==> dbo.Genre...")
 
                 # Execute Genre merge
-                genre_result = conn.execute(genre_sql, params)
+                genre_result = conn.execute(text(genre_sql))
+                genre_output = genre_result.fetchone()
 
-                # Output param is available in params dict
-                logger.info(f"dbo.Genre: inserted {params['inserted_rows'] or 0} rows")
-                logger.info(f"dbo.Genre: updated {params['updated_rows'] or 0} rows")
-                logger.info(f"dbo.Genre: deleted {params['deleted_rows'] or 0} rows")
+                if genre_output:
+                    # Output param is available in params dict
+                    logger.info(f"dbo.Genre: inserted {genre_output.inserted_rows} rows")
+                    logger.info(f"dbo.Genre: updated {genre_output.updated_rows} rows")
+                    logger.info(f"dbo.Genre: deleted {genre_output.deleted_rows} rows")
 
-                # Again but for GenreHierarchy
-                params = {
-                    'inserted_rows': None,
-                    'updated_rows': None,
-                    'deleted_rows': None
-                }
+                logger.info("Merging stage.GenreHierarchy ==> dbo.GenreHierarchy...")
 
                 # Execute Genre merge
-                hierarchy_result = conn.execute(hierarchy_sql, params)
+                hierarchy_result = conn.execute(text(hierarchy_sql))
+                hierarchy_output = hierarchy_result.fetchone()
 
-                # Output param is available in params dict
-                logger.info(f"dbo.GenreHierarchy: inserted {params['inserted_rows'] or 0} rows")
-                logger.info(f"dbo.GenreHierarchy: updated {params['updated_rows'] or 0} rows")
-                logger.info(f"dbo.GenreHierarchy: deleted {params['deleted_rows'] or 0} rows")
+                if hierarchy_output:
+                    # Output param is available in params dict
+                    logger.info(f"dbo.GenreHierarchy: inserted {hierarchy_output.inserted_rows} rows")
+                    logger.info(f"dbo.GenreHierarchy: updated {hierarchy_output.updated_rows} rows")
+                    logger.info(f"dbo.GenreHierarchy: deleted {hierarchy_output.deleted_rows} rows")
 
                 conn.commit()
 
