@@ -98,6 +98,7 @@
     <Build Include="stage\Tables\GenreHierarchy.sql" />
     <Build Include="stage\Stored Procedures\GenreHierarchyMerge.sql" />
     <Build Include="dbo\Views\vwGenreHierarchy.sql" />
+    <Build Include="list\Stored Procedures\ListGenres.sql" />
   </ItemGroup>
   <ItemGroup>
     <SqlCmdVariable Include="SqlServerInstance">
