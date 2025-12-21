@@ -1,0 +1,1 @@
+# Loads the Genre and GenreHierarchy tables from a JSON file
