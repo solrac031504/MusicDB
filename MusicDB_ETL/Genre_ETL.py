@@ -7,6 +7,7 @@ from pandas.api.types import is_bool_dtype, is_datetime64_dtype, is_float_dtype,
 import sqlalchemy
 from sqlalchemy import create_engine, outparam, text, bindparam
 import logging
+import traceback
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -210,69 +211,57 @@ class GenreETLPipeline:
 
     def merge_to_final_table(self):
         """Merge data from stage table to final table"""
-
         try:
-            genre_sql = """
-            DECLARE
-            @InsertedRows INT
-            ,@UpdatedRows INT
-            ,@DeletedRows INT;
-            EXEC stage.GenreMerge
-                @poInsertedRows = @InsertedRows OUTPUT
-                ,@poUpdatedRows = @UpdatedRows OUTPUT
-                ,@poDeletedRows = @DeletedRows OUTPUT;
-            SELECT
-                @InsertedRows as inserted_rows
-                ,@UpdatedRows as updated_rows
-                ,@DeletedRows as deleted_rows;
-            """
-
-            hierarchy_sql = """
-            DECLARE
-            @InsertedRows INT
-            ,@UpdatedRows INT
-            ,@DeletedRows INT;
-            EXEC stage.GenreHierarchyMerge
-                @poInsertedRows = @InsertedRows OUTPUT
-                ,@poUpdatedRows = @UpdatedRows OUTPUT
-                ,@poDeletedRows = @DeletedRows OUTPUT;
-            SELECT
-                @InsertedRows as inserted_rows
-                ,@UpdatedRows as updated_rows
-                ,@DeletedRows as deleted_rows;
-            """
-
             with self.engine.connect() as conn:
                 logger.info("Merging stage.Genre ==> dbo.Genre...")
-
-                # Execute Genre merge
-                genre_result = conn.execute(text(genre_sql))
-                genre_output = genre_result.fetchone()
-
+            
+                # Execute Genre merge and capture output parameters
+                result = conn.execute(text("""
+                    DECLARE @InsertedRows INT, @UpdatedRows INT, @DeletedRows INT;
+                    EXEC stage.GenreMerge
+                        @poInsertedRows = @InsertedRows OUTPUT,
+                        @poUpdatedRows = @UpdatedRows OUTPUT,
+                        @poDeletedRows = @DeletedRows OUTPUT;
+                    SELECT 
+                        @InsertedRows AS inserted_rows,
+                        @UpdatedRows AS updated_rows,
+                        @DeletedRows AS deleted_rows;
+                """))
+            
+                genre_output = result.fetchone()
                 if genre_output:
-                    # Output param is available in params dict
-                    logger.info(f"dbo.Genre: inserted {genre_output.inserted_rows} rows")
-                    logger.info(f"dbo.Genre: updated {genre_output.updated_rows} rows")
-                    logger.info(f"dbo.Genre: deleted {genre_output.deleted_rows} rows")
-
+                    logger.info(f"dbo.Genre: inserted {genre_output.inserted_rows or 0} rows")
+                    logger.info(f"dbo.Genre: updated {genre_output.updated_rows or 0} rows")
+                    logger.info(f"dbo.Genre: deleted {genre_output.deleted_rows or 0} rows")
+            
                 logger.info("Merging stage.GenreHierarchy ==> dbo.GenreHierarchy...")
-
-                # Execute Genre merge
-                hierarchy_result = conn.execute(text(hierarchy_sql))
-                hierarchy_output = hierarchy_result.fetchone()
-
+            
+                # Execute GenreHierarchy merge and capture output parameters
+                result = conn.execute(text("""
+                    DECLARE @InsertedRows INT, @UpdatedRows INT, @DeletedRows INT;
+                    EXEC stage.GenreHierarchyMerge
+                        @poInsertedRows = @InsertedRows OUTPUT,
+                        @poUpdatedRows = @UpdatedRows OUTPUT,
+                        @poDeletedRows = @DeletedRows OUTPUT;
+                    SELECT 
+                        @InsertedRows AS inserted_rows,
+                        @UpdatedRows AS updated_rows,
+                        @DeletedRows AS deleted_rows;
+                """))
+            
+                hierarchy_output = result.fetchone()
                 if hierarchy_output:
-                    # Output param is available in params dict
-                    logger.info(f"dbo.GenreHierarchy: inserted {hierarchy_output.inserted_rows} rows")
-                    logger.info(f"dbo.GenreHierarchy: updated {hierarchy_output.updated_rows} rows")
-                    logger.info(f"dbo.GenreHierarchy: deleted {hierarchy_output.deleted_rows} rows")
-
+                    logger.info(f"dbo.GenreHierarchy: inserted {hierarchy_output.inserted_rows or 0} rows")
+                    logger.info(f"dbo.GenreHierarchy: updated {hierarchy_output.updated_rows or 0} rows")
+                    logger.info(f"dbo.GenreHierarchy: deleted {hierarchy_output.deleted_rows or 0} rows")
+            
                 conn.commit()
 
             logger.info("Merged stage tables into production tables")
             return True
         except Exception as e:
-            logger.error("Error merging staging tables into production tables")
+            logger.error(f"Error merging staging tables into production tables: {str(e)}")
+            logger.error(traceback.format_exc())
             return False
 
     def run_etl(self, json_file_path):
