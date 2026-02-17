@@ -100,18 +100,4 @@
     <Build Include="dbo\Views\vwGenreHierarchy.sql" />
     <Build Include="list\Stored Procedures\ListGenres.sql" />
   </ItemGroup>
-  <ItemGroup>
-    <SqlCmdVariable Include="SqlServerInstance">
-      <DefaultValue>carlos-personalprojects</DefaultValue>
-      <Value>$(SqlCmdVar__1)</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="SqlServerPassword">
-      <DefaultValue>SuperKiki1515!!</DefaultValue>
-      <Value>$(SqlCmdVar__3)</Value>
-    </SqlCmdVariable>
-    <SqlCmdVariable Include="SqlServerUsername">
-      <DefaultValue>saCarlos</DefaultValue>
-      <Value>$(SqlCmdVar__2)</Value>
-    </SqlCmdVariable>
-  </ItemGroup>
 </Project>
